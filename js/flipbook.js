@@ -26,6 +26,49 @@ const Flipbook = {
     // Setup Audio Context for realistic page flip sound
     this.initAudio();
     this.initSearch();
+    this.initResponsive();
+  },
+
+  // Điện thoại: hiển thị 1 trang/lần, vuốt ngang để lật trang
+  initResponsive() {
+    this.mq = window.matchMedia('(max-width: 767px)');
+    this.singlePage = this.mq.matches;
+    const onChange = () => {
+      const was = this.singlePage;
+      this.singlePage = this.mq.matches;
+      if (was !== this.singlePage && this.isOpen()) {
+        if (!this.singlePage && this.currentPageIndex % 2 !== 0) this.currentPageIndex -= 1;
+        this.renderCurrentSpread(true);
+      }
+    };
+    if (this.mq.addEventListener) this.mq.addEventListener('change', onChange);
+    else this.mq.addListener(onChange);
+
+    const stage = document.getElementById('flipbook-modal-content');
+    if (stage) {
+      let sx = 0, sy = 0, t0 = 0;
+      stage.addEventListener('touchstart', (e) => {
+        if (e.touches.length !== 1) return;
+        sx = e.touches[0].clientX; sy = e.touches[0].clientY; t0 = Date.now();
+      }, { passive: true });
+      stage.addEventListener('touchend', (e) => {
+        if (!sx || this.zoomLevel > 1) { sx = 0; return; }
+        const dx = e.changedTouches[0].clientX - sx;
+        const dy = e.changedTouches[0].clientY - sy;
+        sx = 0;
+        if (Math.abs(dx) > 50 && Math.abs(dx) > Math.abs(dy) * 1.5 && Date.now() - t0 < 800) {
+          if (dx < 0) this.nextPage(); else this.prevPage();
+        }
+      }, { passive: true });
+    }
+  },
+
+  isOpen() {
+    return this.modal && !this.modal.classList.contains('hidden');
+  },
+
+  step() {
+    return this.singlePage ? 1 : 2;
   },
 
   initAudio() {
@@ -68,7 +111,23 @@ const Flipbook = {
     }
 
     const matches = [];
-    if (this.currentBook && this.currentBook.pages) {
+    const norm = window.LegalLibrary ? LegalLibrary.norm : (s) => (s || '').toLowerCase();
+    if (this.currentBook && this.currentBook.pageTexts && this.currentBook.pageTexts.length) {
+      // Sách tạo từ PDF gốc: tìm trong toàn văn đã trích xuất của từng trang
+      const nq = norm(query);
+      this.currentBook.pageTexts.forEach((text, idx) => {
+        const flat = text.replace(/\s+/g, ' ');
+        const pos = norm(flat).indexOf(nq);
+        if (pos >= 0) {
+          matches.push({
+            pageIndex: idx,
+            pageNum: idx + 1,
+            title: `Trang ${idx + 1}`,
+            snippet: flat.substring(Math.max(0, pos - 30), Math.min(flat.length, pos + nq.length + 60)).trim()
+          });
+        }
+      });
+    } else if (this.currentBook && this.currentBook.pages) {
       this.currentBook.pages.forEach((p, idx) => {
         const textContent = p.html ? p.html.replace(/<[^>]*>/g, ' ') : '';
         if (textContent.toLowerCase().includes(query) || (p.title && p.title.toLowerCase().includes(query))) {
@@ -117,7 +176,9 @@ const Flipbook = {
       <div class="max-h-52 overflow-y-auto divide-y divide-slate-800 text-xs">
     `;
 
+    const esc = window.LegalLibrary ? LegalLibrary.escapeHtml : (s) => s;
     matches.forEach(m => {
+      m.snippet = esc(m.snippet);
       html += `
         <div onclick="Flipbook.goToPage(${m.pageIndex}); document.getElementById('flipbook-search-results').classList.add('hidden');" class="p-2.5 hover:bg-slate-800/90 cursor-pointer transition text-left">
           <div class="flex items-center justify-between text-amber-400 font-semibold text-[11px] mb-0.5">
@@ -194,16 +255,18 @@ const Flipbook = {
       window.ChibiMascot.speak(`Đang mở cuốn sách "${book.shortTitle}". Đồng chí có thể dùng chuột hoặc phím mũi tên để lật trang nhé!`);
     }
 
+    if (this.pdfDoc) {
+      try { this.pdfDoc.destroy(); } catch (e) { /* bỏ qua */ }
+      this.pdfDoc = null;
+    }
+
     if (book.pdfFile) {
       await this.loadFromPdfFile(book.pdfFile, startPage);
     } else if (book.pages && book.pages.length > 0) {
       this.isPdf = false;
       this.pagesData = book.pages;
       this.totalPages = book.pages.length;
-      this.currentPageIndex = Math.min(startPage, this.totalPages - 1);
-      if (this.currentPageIndex % 2 !== 0 && this.currentPageIndex > 0) {
-        this.currentPageIndex -= 1;
-      }
+      this.currentPageIndex = this.alignIndex(Math.min(startPage, this.totalPages - 1));
       this.renderCurrentSpread();
     } else if (book.pdfUrl) {
       await this.loadFromPdfUrl(book.pdfUrl, startPage);
@@ -221,10 +284,7 @@ const Flipbook = {
         this.pdfDoc = await loadingTask.promise;
         this.totalPages = this.pdfDoc.numPages;
         this.isPdf = true;
-        this.currentPageIndex = startPage;
-        if (this.currentPageIndex % 2 !== 0 && this.currentPageIndex > 0) {
-          this.currentPageIndex -= 1;
-        }
+        this.currentPageIndex = this.alignIndex(Math.min(startPage, this.totalPages - 1));
         await this.renderCurrentSpread();
       } else {
         throw new Error("Thư viện PDF.js chưa sẵn sàng");
@@ -242,10 +302,7 @@ const Flipbook = {
         this.pdfDoc = await loadingTask.promise;
         this.totalPages = this.pdfDoc.numPages;
         this.isPdf = true;
-        this.currentPageIndex = startPage;
-        if (this.currentPageIndex % 2 !== 0 && this.currentPageIndex > 0) {
-          this.currentPageIndex -= 1;
-        }
+        this.currentPageIndex = this.alignIndex(Math.min(startPage, this.totalPages - 1));
         await this.renderCurrentSpread();
       } else {
         this.renderFallbackPages(startPage);
@@ -262,44 +319,54 @@ const Flipbook = {
       { title: "Trang 1", html: `<div class="p-8 text-center"><h3 class="text-xl font-bold">${this.currentBook.title}</h3><p class="mt-4">${this.currentBook.description}</p></div>` }
     ];
     this.totalPages = this.pagesData.length;
-    this.currentPageIndex = startPage;
+    this.currentPageIndex = this.alignIndex(startPage);
     this.renderCurrentSpread();
   },
 
-  async renderCurrentSpread() {
-    this.playFlipSound();
+  alignIndex(idx) {
+    let i = Math.max(0, parseInt(idx, 10) || 0);
+    if (!this.singlePage && i % 2 !== 0) i -= 1;
+    return i;
+  },
 
-    const leftPageNum = this.currentPageIndex;
-    const rightPageNum = this.currentPageIndex + 1;
-
-    // Render Left Page
-    if (leftPageNum < this.totalPages) {
+  async renderPageInto(pageIdx, el, emptyLabel) {
+    if (pageIdx < this.totalPages) {
       if (this.isPdf && this.pdfDoc) {
-        await this.renderPdfPage(leftPageNum + 1, this.leftPageEl);
-      } else if (this.pagesData[leftPageNum]) {
-        this.leftPageEl.innerHTML = this.pagesData[leftPageNum].html;
+        await this.renderPdfPage(pageIdx + 1, el);
+      } else if (this.pagesData[pageIdx]) {
+        el.innerHTML = this.pagesData[pageIdx].html;
       }
-      this.leftPageEl.style.opacity = '1';
     } else {
-      this.leftPageEl.innerHTML = `<div class="h-full bg-slate-100 flex items-center justify-center text-slate-400 text-xs italic">Trang trống</div>`;
+      el.innerHTML = `<div class="h-full bg-slate-100 flex items-center justify-center text-slate-400 text-xs italic">${emptyLabel}</div>`;
+    }
+  },
+
+  async renderCurrentSpread(silent = false) {
+    if (!silent) this.playFlipSound();
+    const token = (this.renderToken = (this.renderToken || 0) + 1);
+
+    if (this.bookContainer) this.bookContainer.classList.toggle('is-single', this.singlePage);
+
+    const leftIdx = this.currentPageIndex;
+    await this.renderPageInto(leftIdx, this.leftPageEl, 'Trang trống');
+    if (token !== this.renderToken) return;
+
+    if (!this.singlePage) {
+      await this.renderPageInto(leftIdx + 1, this.rightPageEl, 'Hết sách');
+      if (token !== this.renderToken) return;
+    } else {
+      this.rightPageEl.innerHTML = '';
     }
 
-    // Render Right Page
-    if (rightPageNum < this.totalPages) {
-      if (this.isPdf && this.pdfDoc) {
-        await this.renderPdfPage(rightPageNum + 1, this.rightPageEl);
-      } else if (this.pagesData[rightPageNum]) {
-        this.rightPageEl.innerHTML = this.pagesData[rightPageNum].html;
-      }
-      this.rightPageEl.style.opacity = '1';
+    if (this.singlePage) {
+      this.pageIndicator.textContent = `Trang ${leftIdx + 1} / ${this.totalPages}`;
     } else {
-      this.rightPageEl.innerHTML = `<div class="h-full bg-slate-100 flex items-center justify-center text-slate-400 text-xs italic">Hết sách</div>`;
+      const displayPage = Math.min(leftIdx + 2, this.totalPages);
+      this.pageIndicator.textContent = displayPage > leftIdx + 1
+        ? `Trang ${leftIdx + 1} - ${displayPage} / ${this.totalPages}`
+        : `Trang ${leftIdx + 1} / ${this.totalPages}`;
     }
 
-    // Update Slider and Indicator
-    const displayPage = Math.min(rightPageNum + 1, this.totalPages);
-    this.pageIndicator.textContent = `Trang ${this.currentPageIndex + 1} - ${displayPage} / ${this.totalPages}`;
-    
     if (this.pageSlider) {
       this.pageSlider.max = Math.max(1, this.totalPages - 1);
       this.pageSlider.value = this.currentPageIndex;
@@ -310,18 +377,21 @@ const Flipbook = {
 
   async renderPdfPage(pageNumber, containerEl) {
     try {
-      containerEl.innerHTML = '';
       const page = await this.pdfDoc.getPage(pageNumber);
-      const viewport = page.getViewport({ scale: 1.5 });
-      
+      const base = page.getViewport({ scale: 1 });
+      // Độ nét theo kích thước khung và mật độ điểm ảnh của màn hình (điện thoại Retina)
+      const boxW = Math.max(containerEl.clientWidth, 280);
+      const dpr = Math.min(window.devicePixelRatio || 1, 2.5);
+      const scale = Math.max(1, (boxW * dpr * Math.max(1, this.zoomLevel)) / base.width);
+      const viewport = page.getViewport({ scale });
+
       const canvas = document.createElement('canvas');
-      const context = canvas.getContext('2d');
       canvas.height = viewport.height;
       canvas.width = viewport.width;
-      canvas.className = "w-full h-full object-contain bg-white rounded";
-
+      canvas.className = "pdf-page-canvas";
+      await page.render({ canvasContext: canvas.getContext('2d'), viewport }).promise;
+      containerEl.innerHTML = '';
       containerEl.appendChild(canvas);
-      await page.render({ canvasContext: context, viewport: viewport }).promise;
     } catch (e) {
       containerEl.innerHTML = `<div class="p-6 text-red-600 text-sm">Lỗi tải trang ${pageNumber}</div>`;
     }
@@ -334,21 +404,16 @@ const Flipbook = {
   },
 
   nextPage() {
-    if (this.currentPageIndex + 2 < this.totalPages) {
-      this.currentPageIndex += 2;
-      this.renderCurrentSpread();
-    } else if (this.currentPageIndex + 1 < this.totalPages) {
-      this.currentPageIndex += 1;
+    const s = this.step();
+    if (this.currentPageIndex + s < this.totalPages) {
+      this.currentPageIndex += s;
       this.renderCurrentSpread();
     }
   },
 
   prevPage() {
-    if (this.currentPageIndex >= 2) {
-      this.currentPageIndex -= 2;
-      this.renderCurrentSpread();
-    } else if (this.currentPageIndex === 1) {
-      this.currentPageIndex = 0;
+    if (this.currentPageIndex > 0) {
+      this.currentPageIndex = Math.max(0, this.currentPageIndex - this.step());
       this.renderCurrentSpread();
     }
   },
@@ -356,9 +421,8 @@ const Flipbook = {
   goToPage(pageIndex) {
     let target = parseInt(pageIndex, 10);
     if (isNaN(target)) target = 0;
-    if (target % 2 !== 0 && target > 0) target -= 1;
-    target = Math.max(0, Math.min(target, this.totalPages - 1));
-    this.currentPageIndex = target;
+    target = Math.min(target, this.totalPages - 1);
+    this.currentPageIndex = this.alignIndex(target);
     this.renderCurrentSpread();
   },
 

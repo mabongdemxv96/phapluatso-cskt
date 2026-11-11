@@ -2,11 +2,23 @@
 <html lang="vi" class="scroll-smooth">
 <head>
   <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+  <meta name="theme-color" content="#0b2545" id="meta-theme-color">
   <title>Không gian Pháp luật số & Trợ lý AI - Đoàn CSKT Công an tỉnh Gia Lai</title>
   <meta name="description" content="Công trình thanh niên: Không gian pháp luật số và Trợ lý AI hỏi đáp, tra cứu văn bản pháp luật của Đoàn cơ sở Phòng Cảnh sát kinh tế – Công an tỉnh Gia Lai (Tiên phong thực hiện Nghị quyết số 57-NQ/TW).">
   <link rel="icon" type="image/png" href="assets/images/logo-cskt.png">
-  
+
+  <!-- Áp dụng giao diện đã lưu trước khi vẽ trang để không bị nháy màu -->
+  <script>
+    (function () {
+      try {
+        var saved = localStorage.getItem('cskt_theme');
+        var light = saved ? saved === 'light' : window.matchMedia('(prefers-color-scheme: light)').matches;
+        if (light) document.documentElement.classList.add('light-pending');
+      } catch (e) {}
+    })();
+  </script>
+
   <!-- Tailwind CSS CDN -->
   <script src="https://cdn.tailwindcss.com"></script>
   <script>
@@ -14,22 +26,9 @@
       theme: {
         extend: {
           colors: {
-            cand: {
-              900: '#061a33',
-              800: '#0b2545',
-              700: '#133968',
-              600: '#1e4f8f'
-            },
-            police: {
-              green: '#1b5e20',
-              darkgreen: '#0f4214'
-            },
-            gold: {
-              300: '#fef08a',
-              400: '#facc15',
-              500: '#f59e0b',
-              600: '#d97706'
-            }
+            cand: { 900: '#061a33', 800: '#0b2545', 700: '#133968', 600: '#1e4f8f' },
+            police: { green: '#1b5e20', darkgreen: '#0f4214' },
+            gold: { 300: '#fef08a', 400: '#facc15', 500: '#f59e0b', 600: '#d97706' }
           },
           fontFamily: {
             sans: ['Inter', 'system-ui', '-apple-system', 'Segoe UI', 'Roboto', 'sans-serif'],
@@ -52,42 +51,33 @@
   <script src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.min.js"></script>
 
   <!-- Custom Stylesheet -->
-  <link rel="stylesheet" href="css/style.css">
+  <link rel="stylesheet" href="css/style.css?v=20261111c">
 </head>
 
 <body class="bg-slate-950 text-slate-100 font-sans antialiased selection:bg-amber-400 selection:text-slate-950 min-h-screen flex flex-col">
+  <script>if (document.documentElement.classList.contains('light-pending')) document.body.classList.add('light-mode');</script>
 
   <!-- ================= TOP HEADER BANNER ================= -->
   <header class="sticky top-0 z-40 glass-header border-b border-amber-500/30 shadow-xl">
-    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-      <div class="flex items-center justify-between h-20">
-        
-        <!-- Brand Identity / Logos -->
-        <div class="flex items-center gap-3">
-          <div class="flex items-center gap-1.5 sm:gap-2">
-            <div class="w-11 h-11 sm:w-13 sm:h-13 rounded-full bg-slate-900/80 p-1 border-2 border-amber-400/70 shadow-lg flex items-center justify-center">
-              <img src="assets/images/logo-cand.svg" class="w-9 h-9 sm:w-11 sm:h-11 object-contain" alt="Huy hiệu CAND" />
-            </div>
-            <div class="w-10 h-10 sm:w-12 sm:h-12 rounded-full bg-slate-900/80 p-1 border border-blue-400/60 shadow flex items-center justify-center">
-              <img src="assets/images/logo-doan.svg" class="w-8 h-8 sm:w-10 sm:h-10 object-contain" alt="Biểu trưng Đoàn" />
-            </div>
-          </div>
-          <div>
-            <p class="text-[10px] sm:text-xs uppercase font-extrabold tracking-wider text-amber-300 flex items-center gap-1">
-              <span class="w-2 h-2 rounded-full bg-red-500 inline-block animate-ping"></span>
-              CÔNG AN TỈNH GIA LAI
-            </p>
-            <h1 class="text-xs sm:text-sm md:text-base font-black text-white uppercase tracking-tight leading-none pt-0.5">
-              ĐOÀN CƠ SỞ PHÒNG CẢNH SÁT KINH TẾ
-            </h1>
-            <p class="text-[10px] sm:text-[11px] text-blue-200/90 font-medium hidden sm:block">
-              Công trình thanh niên: Không gian pháp luật số & Trợ lý AI (NQ số 57-NQ/TW)
-            </p>
-          </div>
-        </div>
+    <div class="max-w-7xl mx-auto px-3 sm:px-6 lg:px-8">
+      <div class="flex items-center justify-between gap-2 h-16 sm:h-20">
+
+        <!-- Brand Identity -->
+        <a href="#" class="min-w-0 flex-1 xl:flex-none">
+          <p class="text-[10px] sm:text-xs uppercase font-extrabold tracking-wider text-amber-300 flex items-center gap-1.5">
+            <span class="w-2 h-2 rounded-full bg-red-500 inline-block animate-ping"></span>
+            CÔNG AN TỈNH GIA LAI
+          </p>
+          <h1 class="text-[13px] sm:text-sm md:text-base font-black text-white uppercase tracking-tight leading-tight pt-0.5 truncate">
+            Đoàn cơ sở Phòng Cảnh sát kinh tế
+          </h1>
+          <p class="text-[10px] sm:text-[11px] text-blue-200/90 font-medium hidden sm:block truncate">
+            Công trình thanh niên: Không gian pháp luật số &amp; Trợ lý AI (NQ số 57-NQ/TW)
+          </p>
+        </a>
 
         <!-- Navigation Links (Desktop) -->
-        <nav class="hidden lg:flex items-center gap-6 text-sm font-semibold text-slate-200">
+        <nav class="hidden xl:flex items-center gap-6 text-sm font-semibold text-slate-200 whitespace-nowrap">
           <a href="#bookshelf-section" class="hover:text-amber-300 transition flex items-center gap-1.5">
             <i class="fa-solid fa-cube text-amber-400"></i> Giá sách 3D
           </a>
@@ -100,22 +90,19 @@
         </nav>
 
         <!-- Right Action Buttons -->
-        <div class="flex items-center gap-2 sm:gap-3">
-          <!-- Light / Dark Mode Toggle Button -->
-          <button id="btn-toggle-theme" class="px-2.5 py-1.5 sm:px-3 sm:py-1.5 rounded-lg text-xs font-semibold bg-slate-800/80 hover:bg-slate-700 text-slate-200 border border-slate-700 transition flex items-center gap-1.5" title="Chuyển chế độ sáng/tối">
+        <div class="flex items-center gap-1.5 sm:gap-3 flex-shrink-0">
+          <button id="btn-toggle-theme" class="header-icon-btn" title="Chuyển chế độ sáng/tối" aria-label="Chuyển chế độ sáng/tối">
             <i id="theme-icon" class="fa-solid fa-sun text-amber-400"></i>
             <span id="theme-text" class="hidden sm:inline">Giao diện sáng</span>
           </button>
 
-          <!-- Quick Chatbot trigger button in header -->
-          <button id="btn-toggle-ai-chat" class="px-3 py-1.5 sm:px-4 sm:py-2 rounded-xl text-xs sm:text-sm font-bold bg-gradient-to-r from-amber-500 to-amber-600 hover:from-amber-400 hover:to-amber-500 text-slate-950 shadow-lg shadow-amber-500/20 transition flex items-center gap-2">
+          <button id="btn-toggle-ai-chat" class="px-3 py-2 sm:px-4 rounded-xl text-xs sm:text-sm font-bold bg-gradient-to-r from-amber-500 to-amber-600 hover:from-amber-400 hover:to-amber-500 text-slate-950 shadow-lg shadow-amber-500/20 transition flex items-center gap-2">
             <i class="fa-solid fa-robot"></i>
             <span>Trợ lý AI</span>
           </button>
 
-          <!-- Mobile Hamburger Toggle -->
-          <button id="btn-mobile-menu" class="lg:hidden p-2 rounded-lg bg-slate-800 text-slate-300 hover:text-white" aria-label="Toggle menu">
-            <i class="fa-solid fa-bars text-lg"></i>
+          <button id="btn-mobile-menu" class="xl:hidden header-icon-btn" aria-label="Mở menu">
+            <i class="fa-solid fa-bars text-base"></i>
           </button>
         </div>
 
@@ -123,123 +110,103 @@
     </div>
 
     <!-- Mobile Dropdown Menu -->
-    <div id="mobile-menu" class="hidden lg:hidden bg-slate-900/95 border-b border-slate-700 px-4 py-3 space-y-2 text-sm font-medium">
-      <a href="#bookshelf-section" class="block py-2 text-slate-200 hover:text-amber-300">
-        <i class="fa-solid fa-cube text-amber-400 mr-2"></i> Không gian Giá sách 3D
+    <div id="mobile-menu" class="hidden xl:hidden bg-slate-900/95 border-b border-slate-700 px-4 py-2 text-sm font-medium">
+      <a href="#bookshelf-section" class="block py-3 text-slate-200 hover:text-amber-300 border-b border-slate-800">
+        <i class="fa-solid fa-cube text-amber-400 mr-2 w-4"></i> Không gian Giá sách 3D
       </a>
-      <a href="#search-section" class="block py-2 text-slate-200 hover:text-amber-300">
-        <i class="fa-solid fa-scale-balanced text-amber-400 mr-2"></i> Tra cứu điều luật
+      <a href="#search-section" class="block py-3 text-slate-200 hover:text-amber-300 border-b border-slate-800">
+        <i class="fa-solid fa-scale-balanced text-amber-400 mr-2 w-4"></i> Tra cứu điều luật
       </a>
-      <a href="javascript:void(0)" onclick="openNghiQuyet57()" class="block py-2 text-slate-200 hover:text-amber-300">
-        <i class="fa-solid fa-flag text-red-400 mr-2"></i> Toàn văn Nghị quyết 57-NQ/TW
+      <a href="javascript:void(0)" onclick="openNghiQuyet57()" class="block py-3 text-slate-200 hover:text-amber-300">
+        <i class="fa-solid fa-flag text-red-400 mr-2 w-4"></i> Toàn văn Nghị quyết 57-NQ/TW
       </a>
     </div>
   </header>
 
   <!-- ================= HERO SECTION ================= -->
-  <section class="relative bg-cand-gradient border-b border-slate-800 py-12 md:py-16 overflow-hidden">
-    <!-- Background Decor Elements -->
-    <div class="absolute inset-0 bg-[radial-gradient(#1e3a8a_1px,transparent_1px)] [background-size:24px_24px] opacity-20 pointer-events-none"></div>
+  <section class="relative bg-cand-gradient border-b border-slate-800 py-8 sm:py-12 md:py-16 overflow-hidden">
+    <div class="hero-dots absolute inset-0 bg-[radial-gradient(#1e3a8a_1px,transparent_1px)] [background-size:24px_24px] opacity-20 pointer-events-none"></div>
     <div class="absolute -top-24 -left-24 w-96 h-96 bg-blue-600/10 rounded-full blur-3xl pointer-events-none"></div>
     <div class="absolute -bottom-24 -right-24 w-96 h-96 bg-amber-500/10 rounded-full blur-3xl pointer-events-none"></div>
 
     <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
-      <div class="grid grid-cols-1 lg:grid-cols-12 gap-8 items-center">
-        
-        <!-- Left Hero Text & Search Box -->
+      <div class="grid grid-cols-1 lg:grid-cols-12 gap-6 lg:gap-8 items-center">
+
         <div class="lg:col-span-8 text-center lg:text-left">
-          
-          <!-- Youth Union & Resolution Badge -->
-          <div class="inline-flex items-center gap-2 px-3 py-1.5 rounded-full bg-blue-950/80 border border-amber-400/40 text-amber-300 text-xs font-semibold mb-4 shadow-sm">
+
+          <div class="inline-flex items-center gap-2 px-3 py-1.5 rounded-full bg-blue-950/80 border border-amber-400/40 text-amber-300 text-[11px] sm:text-xs font-semibold mb-4 shadow-sm">
             <span class="w-2 h-2 rounded-full bg-amber-400 animate-pulse"></span>
             <span>CÔNG TRÌNH THANH NIÊN CHUYỂN ĐỔI SỐ</span>
             <span class="text-slate-400 hidden sm:inline">|</span>
             <span class="text-blue-200 hidden sm:inline">Nghị quyết số 57-NQ/TW</span>
           </div>
 
-          <h2 class="text-2xl sm:text-3xl md:text-4xl lg:text-5xl font-black text-white tracking-tight uppercase leading-tight">
+          <h2 class="text-[26px] leading-[1.15] sm:text-3xl md:text-4xl lg:text-5xl font-black text-white tracking-tight uppercase sm:leading-tight">
             KHÔNG GIAN PHÁP LUẬT SỐ &amp; <br class="hidden sm:block"/>
-            <span class="text-transparent bg-clip-text bg-gradient-to-r from-amber-300 via-amber-400 to-amber-500">
+            <span class="hero-gradient-text text-transparent bg-clip-text bg-gradient-to-r from-amber-300 via-amber-400 to-amber-500">
               TRỢ LÝ AI HỎI ĐÁP PHÁP LUẬT
             </span>
           </h2>
 
-          <p class="mt-4 text-sm sm:text-base text-slate-300 max-w-2xl leading-relaxed">
-            Nền tảng số hóa tri thức pháp luật của <strong>Đoàn cơ sở Phòng Cảnh sát kinh tế – Công an tỉnh Gia Lai</strong>. Trải nghiệm giá sách 3D đọc trực tuyến lật trang chân thực, tra cứu nhanh điều luật và tương tác hỏi đáp 24/7 cùng Trợ lý AI.
+          <p class="mt-4 text-sm sm:text-base text-slate-300 max-w-2xl leading-relaxed mx-auto lg:mx-0">
+            Nền tảng số hóa tri thức pháp luật của <strong>Đoàn cơ sở Phòng Cảnh sát kinh tế – Công an tỉnh Gia Lai</strong>. Đọc văn bản gốc trên giá sách 3D lật trang, tra cứu toàn văn từng điều luật và hỏi đáp 24/7 cùng Trợ lý AI.
           </p>
 
-          <!-- Core Search Bar in Hero -->
-          <div class="mt-6 sm:mt-8 max-w-2xl" id="search-section">
-            <div class="relative flex items-center">
-              <div class="absolute left-4 text-amber-400 text-lg">
+          <!-- Thanh tìm kiếm kính lúp -->
+          <div class="mt-6 sm:mt-8 max-w-2xl mx-auto lg:mx-0 text-left scroll-mt-24" id="search-section">
+            <form class="relative flex items-center" onsubmit="event.preventDefault(); LawSearch.executeSearch(document.getElementById('law-search-input').value)">
+              <div class="absolute left-4 text-amber-400 text-lg pointer-events-none">
                 <i class="fa-solid fa-magnifying-glass"></i>
               </div>
-              <input 
-                id="law-search-input" 
-                type="text" 
-                placeholder="Nhập tên tội danh, điều luật hoặc từ khóa (ví dụ: Buôn lậu, Điều 200, Trốn thuế, Tín dụng đen...)" 
-                class="w-full pl-12 pr-28 py-3.5 sm:py-4 bg-slate-900/90 border-2 border-amber-400/60 focus:border-amber-400 rounded-2xl text-white placeholder-slate-400 text-xs sm:text-sm shadow-2xl focus:outline-none focus:ring-4 focus:ring-amber-400/20 transition"
+              <input
+                id="law-search-input"
+                type="search"
+                enterkeyhint="search"
+                autocomplete="off"
+                placeholder="Tội danh, số điều hoặc từ khóa…"
+                class="search-hero-input w-full pl-11 sm:pl-12 pr-24 sm:pr-28 py-3.5 sm:py-4 bg-slate-900/90 border-2 border-amber-400/60 focus:border-amber-400 rounded-2xl text-white placeholder-slate-400 shadow-2xl focus:outline-none focus:ring-4 focus:ring-amber-400/20 transition"
               />
-              <button 
-                onclick="LawSearch.executeSearch(document.getElementById('law-search-input').value)" 
-                class="absolute right-2 px-4 py-2 sm:py-2.5 bg-amber-500 hover:bg-amber-400 text-slate-950 font-bold text-xs sm:text-sm rounded-xl transition shadow flex items-center gap-1.5"
-              >
+              <button type="submit" class="absolute right-2 px-3 sm:px-4 py-2 sm:py-2.5 bg-amber-500 hover:bg-amber-400 text-slate-950 font-bold text-xs sm:text-sm rounded-xl transition shadow flex items-center gap-1.5">
                 <span>Tra cứu</span>
                 <i class="fa-solid fa-arrow-right text-xs"></i>
               </button>
-            </div>
+            </form>
 
             <!-- Quick Search Suggestion Tags -->
-            <div class="mt-3 flex items-center gap-1.5 flex-wrap text-xs text-slate-400">
-              <span class="text-[11px] text-amber-300 font-semibold flex items-center gap-1">
+            <div class="quick-tags mt-3 flex items-center gap-1.5 text-xs text-slate-400">
+              <span class="text-[11px] text-amber-300 font-semibold flex items-center gap-1 flex-shrink-0">
                 <i class="fa-solid fa-bolt"></i> Tra cứu nhanh:
               </span>
-              <button class="quick-search-tag px-2.5 py-1 bg-rose-950/80 hover:bg-rose-900 text-amber-300 rounded-lg border border-rose-500/50 transition font-bold" data-term="điều 18a">
-                <i class="fa-solid fa-bolt text-red-400 mr-1"></i>Điều 18a (VPHC Điện tử 2025)
+              <button class="quick-search-tag is-hot" data-term="điều 18a">
+                <i class="fa-solid fa-bolt text-red-400 mr-1"></i>Điều 18a (VPHC điện tử)
               </button>
-              <button class="quick-search-tag px-2.5 py-1 bg-slate-800/80 hover:bg-blue-900/60 text-slate-300 hover:text-amber-300 rounded-lg border border-slate-700 transition" data-term="điều 6">
-                Điều 6 (Thời hiệu VPHC)
-              </button>
-              <button class="quick-search-tag px-2.5 py-1 bg-slate-800/80 hover:bg-blue-900/60 text-slate-300 hover:text-amber-300 rounded-lg border border-slate-700 transition" data-term="188">
-                Điều 188 (Buôn lậu)
-              </button>
-              <button class="quick-search-tag px-2.5 py-1 bg-slate-800/80 hover:bg-blue-900/60 text-slate-300 hover:text-amber-300 rounded-lg border border-slate-700 transition" data-term="200">
-                Điều 200 (Trốn thuế)
-              </button>
-              <button class="quick-search-tag px-2.5 py-1 bg-slate-800/80 hover:bg-blue-900/60 text-slate-300 hover:text-amber-300 rounded-lg border border-slate-700 transition" data-term="201">
-                Điều 201 (Cho vay nặng lãi)
-              </button>
-              <button class="quick-search-tag px-2.5 py-1 bg-slate-800/80 hover:bg-blue-900/60 text-slate-300 hover:text-amber-300 rounded-lg border border-slate-700 transition" data-term="324">
-                Điều 324 (Rửa tiền)
-              </button>
-              <button class="quick-search-tag px-2.5 py-1 bg-slate-800/80 hover:bg-blue-900/60 text-slate-300 hover:text-amber-300 rounded-lg border border-slate-700 transition" data-term="57-NQ/TW">
-                Nghị quyết 57-NQ/TW
-              </button>
+              <button class="quick-search-tag" data-term="điều 6">Điều 6 (Thời hiệu VPHC)</button>
+              <button class="quick-search-tag" data-term="188">Điều 188 (Buôn lậu)</button>
+              <button class="quick-search-tag" data-term="200">Điều 200 (Trốn thuế)</button>
+              <button class="quick-search-tag" data-term="201">Điều 201 (Cho vay nặng lãi)</button>
+              <button class="quick-search-tag" data-term="324">Điều 324 (Rửa tiền)</button>
+              <button class="quick-search-tag" data-term="57-NQ/TW">Nghị quyết 57-NQ/TW</button>
             </div>
           </div>
 
           <!-- Hero Action Buttons -->
-          <div class="mt-6 flex flex-wrap items-center justify-center lg:justify-start gap-3">
-            <a href="#bookshelf-section" class="px-5 py-2.5 bg-blue-700 hover:bg-blue-600 text-white text-xs sm:text-sm font-bold rounded-xl shadow-lg transition flex items-center gap-2">
-              <i class="fa-solid fa-book-open"></i> Xem Giá sách 3D
+          <div class="mt-6 grid grid-cols-2 sm:flex sm:flex-wrap items-center justify-center lg:justify-start gap-2 sm:gap-3">
+            <a href="#bookshelf-section" class="keep-dark px-4 sm:px-5 py-2.5 bg-blue-700 hover:bg-blue-600 text-white text-xs sm:text-sm font-bold rounded-xl shadow-lg transition flex items-center justify-center gap-2">
+              <i class="fa-solid fa-book-open"></i> Giá sách 3D
             </a>
-            <button onclick="openNghiQuyet57()" class="px-5 py-2.5 bg-gradient-to-r from-red-700 to-rose-800 hover:from-red-600 hover:to-rose-700 text-white text-xs sm:text-sm font-bold rounded-xl border border-amber-400/50 shadow-lg transition flex items-center gap-2">
-              <i class="fa-solid fa-flag text-amber-300"></i> Toàn văn Nghị quyết 57-NQ/TW
+            <button onclick="openNghiQuyet57()" class="keep-dark px-4 sm:px-5 py-2.5 bg-gradient-to-r from-red-700 to-rose-800 hover:from-red-600 hover:to-rose-700 text-white text-xs sm:text-sm font-bold rounded-xl border border-amber-400/50 shadow-lg transition flex items-center justify-center gap-2">
+              <i class="fa-solid fa-flag text-amber-300"></i> Nghị quyết 57
             </button>
           </div>
 
         </div>
 
-        <!-- Right Hero Visual: Logo Cảnh sát kinh tế -->
-        <div class="lg:col-span-4 flex flex-col items-center justify-center relative">
-          <div class="relative w-64 h-72 sm:w-72 sm:h-80 flex items-center justify-center">
-            
-            <!-- Golden Glow Ring -->
+        <!-- Right Hero Visual: Logo Cảnh sát kinh tế (ẩn trên điện thoại để vào thẳng nội dung) -->
+        <div class="hidden sm:flex lg:col-span-4 flex-col items-center justify-center relative">
+          <div class="relative w-56 h-64 lg:w-72 lg:h-80 flex items-center justify-center">
             <div class="absolute inset-4 rounded-full bg-gradient-to-tr from-amber-500/20 to-emerald-600/30 blur-2xl"></div>
-
-            <!-- Economic Police Official Logo -->
             <div class="relative z-10 w-full h-full flex items-center justify-center animate-chibi-float cursor-pointer" onclick="ChibiMascot.nextTip()" title="Đoàn cơ sở Phòng Cảnh sát kinh tế - Công an tỉnh Gia Lai">
-              <img src="assets/images/logo-cskt.png" class="w-full h-full object-contain drop-shadow-[0_15px_30px_rgba(0,0,0,0.7)]" alt="Biểu trưng Cảnh sát kinh tế" />
+              <img src="assets/images/logo-cskt.png" class="hero-logo w-full h-full object-contain" alt="Biểu trưng Cảnh sát kinh tế" />
             </div>
           </div>
         </div>
@@ -250,72 +217,84 @@
 
 
   <!-- ================= 3D BOOKSHELF SECTION ================= -->
-  <section id="bookshelf-section" class="py-14 sm:py-18 bg-slate-900 relative">
-    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-      
+  <section id="bookshelf-section" class="py-10 sm:py-16 bg-slate-900 relative scroll-mt-16">
+    <div class="max-w-7xl mx-auto px-3 sm:px-6 lg:px-8">
+
       <!-- Section Header -->
-      <div class="flex flex-col md:flex-row md:items-end justify-between gap-4 mb-8 pb-4 border-b border-slate-800">
+      <div class="flex flex-col md:flex-row md:items-end justify-between gap-4 mb-6 sm:mb-8 pb-4 border-b border-slate-800 px-1">
         <div>
           <div class="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-blue-900/40 border border-blue-500/30 text-blue-300 text-xs font-semibold mb-2">
             <i class="fa-solid fa-layer-group text-amber-400"></i> Tủ sách pháp luật điện tử số hóa
           </div>
           <h3 class="text-xl sm:text-2xl md:text-3xl font-black text-white uppercase tracking-tight">
-            KHÔNG GIAN GIÁ SÁCH 3D TRỰC TUYẾN
+            GIÁ SÁCH 3D TRỰC TUYẾN
           </h3>
           <p class="text-xs sm:text-sm text-slate-400 mt-1">
-            Bấm vào bất kỳ cuốn sách nào trên kệ để mở trình đọc 3D hai trang lật như sách thật.
+            Bấm vào cuốn sách để đọc bản PDF gốc với hiệu ứng lật trang như sách thật.
           </p>
         </div>
 
-        <div class="flex items-center gap-2">
-          <button onclick="openNghiQuyet57()" class="px-4 py-2 bg-red-900/60 hover:bg-red-800 text-amber-300 font-bold text-xs rounded-xl border border-red-500/40 shadow transition flex items-center gap-2">
+        <div class="flex flex-wrap items-center gap-2">
+          <input id="library-upload-input" type="file" accept="application/pdf,.pdf" multiple class="hidden" />
+          <button id="btn-library-upload" class="px-4 py-2.5 bg-amber-500 hover:bg-amber-400 text-slate-950 font-bold text-xs rounded-xl shadow transition flex items-center gap-2">
+            <i class="fa-solid fa-file-arrow-up"></i>
+            <span>Tải văn bản PDF</span>
+          </button>
+          <button onclick="openNghiQuyet57()" class="px-4 py-2.5 bg-red-900/60 hover:bg-red-800 text-amber-300 font-bold text-xs rounded-xl border border-red-500/40 shadow transition flex items-center gap-2">
             <i class="fa-solid fa-flag text-amber-400"></i>
             <span>Nghị quyết 57-NQ/TW</span>
           </button>
         </div>
       </div>
 
+      <!-- Library status -->
+      <div id="library-status" class="library-status mb-4 mx-1 text-xs text-slate-400 flex items-center gap-2">
+        <i class="fa-solid fa-spinner fa-spin text-amber-500"></i> Đang nạp thư viện văn bản gốc…
+      </div>
+
       <!-- Category Filter Tabs -->
-      <div class="flex items-center gap-2 overflow-x-auto pb-3 mb-6 scrollbar-none">
-        <button class="category-filter-btn px-4 py-2 rounded-xl text-xs sm:text-sm transition bg-amber-500 text-slate-950 font-bold shadow-amber-500/30 shadow-md whitespace-nowrap" data-category="all">
-          <i class="fa-solid fa-border-all mr-1.5"></i> Tất cả sách &amp; tài liệu
+      <div class="flex items-center gap-2 overflow-x-auto pb-3 mb-4 sm:mb-6 scrollbar-none -mx-3 px-3 sm:mx-0 sm:px-0">
+        <button class="category-filter-btn is-active" data-category="all">
+          <i class="fa-solid fa-border-all mr-1.5"></i> Tất cả
         </button>
-        <button class="category-filter-btn px-4 py-2 rounded-xl text-xs sm:text-sm transition bg-slate-800/80 hover:bg-slate-700 text-slate-300 font-medium whitespace-nowrap" data-category="hinh-su">
-          <i class="fa-solid fa-gavel mr-1.5 text-red-400"></i> BLHS - Tội phạm kinh tế
+        <button class="category-filter-btn" data-category="hinh-su">
+          <i class="fa-solid fa-gavel mr-1.5 text-red-400"></i> Hình sự &amp; VPHC
         </button>
-        <button class="category-filter-btn px-4 py-2 rounded-xl text-xs sm:text-sm transition bg-slate-800/80 hover:bg-slate-700 text-slate-300 font-medium whitespace-nowrap" data-category="doanh-nghiep">
+        <button class="category-filter-btn" data-category="doanh-nghiep">
           <i class="fa-solid fa-building mr-1.5 text-blue-400"></i> Doanh nghiệp &amp; Đầu tư
         </button>
-        <button class="category-filter-btn px-4 py-2 rounded-xl text-xs sm:text-sm transition bg-slate-800/80 hover:bg-slate-700 text-slate-300 font-medium whitespace-nowrap" data-category="thue-tai-chinh">
+        <button class="category-filter-btn" data-category="thue-tai-chinh">
           <i class="fa-solid fa-coins mr-1.5 text-amber-400"></i> Thuế - Đấu thầu
         </button>
-        <button class="category-filter-btn px-4 py-2 rounded-xl text-xs sm:text-sm transition bg-slate-800/80 hover:bg-slate-700 text-slate-300 font-medium whitespace-nowrap" data-category="nghiep-vu">
-          <i class="fa-solid fa-book-bookmark mr-1.5 text-emerald-400"></i> Cẩm nang CSKT &amp; NQ 57
+        <button class="category-filter-btn" data-category="nghiep-vu">
+          <i class="fa-solid fa-book-bookmark mr-1.5 text-emerald-400"></i> Cẩm nang &amp; NQ 57
         </button>
       </div>
 
       <!-- 3D Bookshelf Stage Wrapper -->
-      <div id="bookshelf-wrapper" class="bookshelf-stage bg-slate-950/80 border border-slate-800/90 rounded-3xl p-6 sm:p-10 shadow-2xl relative overflow-hidden transition-all">
-        <!-- Ambient wood texture backdrop -->
-        <div class="absolute inset-0 bg-gradient-to-b from-blue-950/20 via-slate-950/60 to-slate-950 pointer-events-none"></div>
+      <div id="bookshelf-wrapper" class="bookshelf-stage bg-slate-950/80 border border-slate-800/90 rounded-2xl sm:rounded-3xl p-3 sm:p-10 shadow-2xl relative overflow-hidden transition-all">
+        <div class="shelf-ambient absolute inset-0 bg-gradient-to-b from-blue-950/20 via-slate-950/60 to-slate-950 pointer-events-none"></div>
 
-        <!-- Dynamic 3D Shelves Container -->
-        <div id="bookshelf-container" class="relative z-10 space-y-6">
+        <div class="drop-hint">
+          <i class="fa-solid fa-file-arrow-down text-3xl"></i>
+          <span>Thả tệp PDF vào đây để thêm vào tủ sách</span>
+        </div>
+
+        <div id="bookshelf-container" class="relative z-10 space-y-4 sm:space-y-6">
           <!-- Rendered via js/bookshelf.js -->
         </div>
 
-        <!-- Shelf Floor Shadow -->
-        <div class="w-full h-8 bg-black/40 blur-md rounded-full mt-6"></div>
+        <div class="w-full h-6 sm:h-8 bg-black/40 blur-md rounded-full mt-4 sm:mt-6 shelf-floor"></div>
       </div>
 
       <!-- Bookshelf Interaction Guide -->
-      <div class="mt-4 p-3.5 bg-slate-950/60 border border-slate-800 rounded-xl flex items-center justify-between text-xs text-slate-400">
-        <span class="flex items-center gap-2">
-          <i class="fa-solid fa-hand-pointer text-amber-400"></i>
-          <strong>Hướng dẫn:</strong> Rê chuột lên sách để xem hiệu ứng nổi 3D; Nhấp chuột vào cuốn sách bất kỳ để mở trình đọc lật sách.
+      <div class="mt-4 p-3.5 bg-slate-950/60 border border-slate-800 rounded-xl flex items-start sm:items-center justify-between gap-2 text-xs text-slate-400">
+        <span class="flex items-start sm:items-center gap-2">
+          <i class="fa-solid fa-hand-pointer text-amber-400 mt-0.5 sm:mt-0"></i>
+          <span><strong>Hướng dẫn:</strong> Chạm vào sách để mở trình đọc. Trên điện thoại vuốt ngang để lật trang. Kéo thả hoặc bấm “Tải văn bản PDF” để thêm văn bản mới.</span>
         </span>
-        <span class="text-amber-400 font-semibold hidden sm:inline">
-          <i class="fa-solid fa-book-open-reader mr-1"></i> Tủ sách pháp luật điện tử số hóa 4.0
+        <span class="text-amber-400 font-semibold hidden md:inline whitespace-nowrap">
+          <i class="fa-solid fa-book-open-reader mr-1"></i> Tủ sách pháp luật số 4.0
         </span>
       </div>
 
@@ -324,12 +303,11 @@
 
 
   <!-- ================= ABOUT RESOLUTION 57 & UNIT SECTION ================= -->
-  <section id="about-section" class="py-14 sm:py-18 bg-slate-950 border-t border-slate-800 relative">
+  <section id="about-section" class="py-10 sm:py-16 bg-slate-950 border-t border-slate-800 relative">
     <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-      
+
       <div class="grid grid-cols-1 lg:grid-cols-12 gap-8 items-center">
-        
-        <!-- Left: Unit Profile & Resolution Info -->
+
         <div class="lg:col-span-7">
           <div class="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-red-950/80 border border-red-500/40 text-red-300 text-xs font-semibold mb-3">
             <i class="fa-solid fa-star text-amber-400"></i> Nghị quyết số 57-NQ/TW của Bộ Chính trị
@@ -340,34 +318,39 @@
             <span class="text-amber-400">CÔNG AN TỈNH GIA LAI</span>
           </h3>
 
-          <p class="mt-3 text-sm text-slate-300 leading-relaxed text-justify">
+          <p class="mt-3 text-sm text-slate-300 leading-relaxed sm:text-justify">
             Thực hiện định hướng của Bộ Chính trị tại <strong>Nghị quyết số 57-NQ/TW</strong> về đột phá phát triển khoa học công nghệ, đổi mới sáng tạo và chuyển đổi số quốc gia; tuổi trẻ Phòng Cảnh sát kinh tế – Công an tỉnh Gia Lai đã chủ động nghiên cứu, xây dựng và đưa vào vận hành <strong>“Không gian pháp luật số và Trợ lý AI hỏi đáp, tra cứu văn bản pháp luật”</strong>.
           </p>
 
-          <!-- 3 Pillars Grid -->
           <div class="mt-6 grid grid-cols-1 sm:grid-cols-3 gap-3">
-            <div class="p-3.5 bg-slate-900 border border-slate-800 rounded-xl">
-              <div class="w-8 h-8 rounded-lg bg-blue-900/60 text-blue-400 flex items-center justify-center mb-2">
+            <div class="p-3.5 bg-slate-900 border border-slate-800 rounded-xl flex sm:block gap-3">
+              <div class="w-8 h-8 flex-shrink-0 rounded-lg bg-blue-900/60 text-blue-400 flex items-center justify-center mb-2">
                 <i class="fa-solid fa-microchip"></i>
               </div>
-              <h5 class="text-xs font-bold text-white uppercase">Chuyển đổi số</h5>
-              <p class="text-[11px] text-slate-400 mt-1">Số hóa toàn diện tài liệu, giáo trình và tủ sách pháp luật sang không gian 3D.</p>
+              <div>
+                <h5 class="text-xs font-bold text-white uppercase">Chuyển đổi số</h5>
+                <p class="text-[12px] sm:text-[11px] text-slate-400 mt-1">Số hóa toàn diện tài liệu, giáo trình và tủ sách pháp luật sang không gian 3D.</p>
+              </div>
             </div>
 
-            <div class="p-3.5 bg-slate-900 border border-slate-800 rounded-xl">
-              <div class="w-8 h-8 rounded-lg bg-amber-900/60 text-amber-400 flex items-center justify-center mb-2">
+            <div class="p-3.5 bg-slate-900 border border-slate-800 rounded-xl flex sm:block gap-3">
+              <div class="w-8 h-8 flex-shrink-0 rounded-lg bg-amber-900/60 text-amber-400 flex items-center justify-center mb-2">
                 <i class="fa-solid fa-robot"></i>
               </div>
-              <h5 class="text-xs font-bold text-white uppercase">Ứng dụng Trí tuệ AI</h5>
-              <p class="text-[11px] text-slate-400 mt-1">Trợ lý ảo hỗ trợ giải thích, trả lời thắc mắc pháp luật 24/7 chuẩn xác.</p>
+              <div>
+                <h5 class="text-xs font-bold text-white uppercase">Ứng dụng Trí tuệ AI</h5>
+                <p class="text-[12px] sm:text-[11px] text-slate-400 mt-1">Trợ lý ảo giải đáp pháp luật 24/7, trích dẫn nguyên văn căn cứ từ văn bản gốc.</p>
+              </div>
             </div>
 
-            <div class="p-3.5 bg-slate-900 border border-slate-800 rounded-xl">
-              <div class="w-8 h-8 rounded-lg bg-emerald-900/60 text-emerald-400 flex items-center justify-center mb-2">
+            <div class="p-3.5 bg-slate-900 border border-slate-800 rounded-xl flex sm:block gap-3">
+              <div class="w-8 h-8 flex-shrink-0 rounded-lg bg-emerald-900/60 text-emerald-400 flex items-center justify-center mb-2">
                 <i class="fa-solid fa-users"></i>
               </div>
-              <h5 class="text-xs font-bold text-white uppercase">Phục vụ Nhân dân</h5>
-              <p class="text-[11px] text-slate-400 mt-1">Nâng cao nhận thức phòng chống tội phạm kinh tế cho bà con &amp; doanh nghiệp Gia Lai.</p>
+              <div>
+                <h5 class="text-xs font-bold text-white uppercase">Phục vụ Nhân dân</h5>
+                <p class="text-[12px] sm:text-[11px] text-slate-400 mt-1">Nâng cao nhận thức phòng chống tội phạm kinh tế cho bà con &amp; doanh nghiệp Gia Lai.</p>
+              </div>
             </div>
           </div>
 
@@ -376,18 +359,16 @@
           </div>
 
           <div class="mt-4">
-            <button onclick="openNghiQuyet57()" class="px-4 py-2.5 bg-gradient-to-r from-red-700 to-rose-800 hover:from-red-600 hover:to-rose-700 text-white font-bold text-xs rounded-xl shadow-md border border-amber-400/40 transition flex items-center gap-2">
+            <button onclick="openNghiQuyet57()" class="keep-dark w-full sm:w-auto px-4 py-2.5 bg-gradient-to-r from-red-700 to-rose-800 hover:from-red-600 hover:to-rose-700 text-white font-bold text-xs rounded-xl shadow-md border border-amber-400/40 transition flex items-center justify-center gap-2">
               <i class="fa-solid fa-book-open text-amber-300"></i>
-              <span>Mở đọc toàn văn Nghị quyết số 57-NQ/TW trong Sách 3D</span>
+              <span>Đọc toàn văn Nghị quyết số 57-NQ/TW trong Sách 3D</span>
             </button>
           </div>
-
         </div>
 
-        <!-- Right: Resolution Banner & CSKT Logo -->
         <div class="lg:col-span-5 flex flex-col items-center">
-          <div class="w-full max-w-sm p-6 bg-gradient-to-b from-slate-900 to-blue-950/80 border-2 border-amber-400/50 rounded-3xl shadow-2xl text-center relative overflow-hidden">
-            <div class="w-28 h-28 mx-auto mb-3 flex items-center justify-center">
+          <div class="about-card w-full max-w-sm p-6 bg-gradient-to-b from-slate-900 to-blue-950/80 border-2 border-amber-400/50 rounded-3xl shadow-2xl text-center relative overflow-hidden">
+            <div class="w-24 h-24 sm:w-28 sm:h-28 mx-auto mb-3 flex items-center justify-center">
               <img src="assets/images/logo-cskt.png" class="w-full h-full object-contain drop-shadow-lg" alt="Logo Cảnh sát kinh tế" />
             </div>
 
@@ -397,7 +378,7 @@
 
             <h4 class="text-base font-bold text-white mt-3">Hỏi đáp Pháp luật Thông minh</h4>
             <p class="text-xs text-slate-300 mt-1 leading-relaxed">
-              Trợ lý Trí tuệ nhân tạo (AI) chuyên sâu về pháp luật, giúp giải đáp nhanh các tình huống nghiệp vụ và quy định pháp luật 24/7.
+              Trợ lý AI chuyên sâu về pháp luật, giải đáp tình huống nghiệp vụ và luôn kèm nguyên văn căn cứ pháp lý để đối chiếu.
             </p>
 
             <button onclick="AIChatbot.toggleChat()" class="mt-4 w-full py-2.5 bg-amber-500 hover:bg-amber-400 text-slate-950 font-bold text-xs rounded-xl transition shadow flex items-center justify-center gap-2">
@@ -413,10 +394,9 @@
 
 
   <!-- ================= FOOTER ================= -->
-  <footer class="mt-auto bg-slate-950 border-t border-slate-800 text-slate-400 text-xs py-8">
+  <footer class="mt-auto bg-slate-950 border-t border-slate-800 text-slate-400 text-xs py-8 pb-28 sm:pb-8">
     <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
       <div class="grid grid-cols-1 md:grid-cols-12 gap-6 items-center">
-        
         <div class="md:col-span-8 space-y-1">
           <p class="text-sm font-black text-amber-300 uppercase">
             CÔNG TRÌNH THANH NIÊN: KHÔNG GIAN PHÁP LUẬT SỐ &amp; TRỢ LÝ AI HỎI ĐÁP PHÁP LUẬT
@@ -425,213 +405,155 @@
             ĐOÀN CƠ SỞ PHÒNG CẢNH SÁT KINH TẾ - CÔNG AN TỈNH GIA LAI
           </p>
         </div>
-
         <div class="md:col-span-4 text-left md:text-right text-[11px] space-y-1">
           <p class="text-slate-300 font-semibold">Tiên phong thực hiện Nghị quyết số 57-NQ/TW</p>
           <p class="text-slate-500">Bản quyền © 2024 - 2026 Đoàn cơ sở Phòng CSKT Gia Lai</p>
           <p class="text-amber-400/80">Ứng dụng công nghệ web 3D &amp; Trí tuệ nhân tạo (AI)</p>
         </div>
-
       </div>
     </div>
   </footer>
 
 
   <!-- ================= MODAL 1: 3D FLIPBOOK READER MODAL ================= -->
-  <div id="flipbook-modal" class="hidden fixed inset-0 z-50 bg-black/90 backdrop-blur-md flex flex-col justify-between overflow-hidden">
-    
+  <div id="flipbook-modal" class="keep-dark hidden fixed inset-0 z-50 bg-black/90 backdrop-blur-md flex flex-col justify-between overflow-hidden">
+
     <!-- Flipbook Header Bar -->
-    <div class="h-14 bg-slate-900/95 border-b border-slate-800 px-4 sm:px-6 flex items-center justify-between z-20">
-      <div class="flex items-center gap-3">
-        <span class="w-8 h-8 rounded-lg bg-amber-500/20 text-amber-400 flex items-center justify-center border border-amber-500/40">
+    <div class="fb-toolbar bg-slate-900/95 border-b border-slate-800 px-3 sm:px-6 py-2 flex flex-wrap items-center justify-between gap-2 z-20">
+      <div class="flex items-center gap-2.5 min-w-0 flex-1">
+        <span class="w-8 h-8 flex-shrink-0 rounded-lg bg-amber-500/20 text-amber-400 flex items-center justify-center border border-amber-500/40">
           <i class="fa-solid fa-book-open text-sm"></i>
         </span>
-        <div>
-          <h4 id="flipbook-book-title" class="text-xs sm:text-sm font-bold text-white line-clamp-1">
-            Đang tải sách...
-          </h4>
-          <span class="text-[10px] text-amber-300">Trình đọc lật sách 3D - CSKT Gia Lai</span>
+        <div class="min-w-0">
+          <h4 id="flipbook-book-title" class="text-xs sm:text-sm font-bold text-white line-clamp-1">Đang tải sách...</h4>
+          <span class="text-[10px] text-amber-300 hidden sm:inline">Trình đọc lật sách 3D - CSKT Gia Lai</span>
         </div>
-      </div>
-
-      <!-- Search inside 3D Book Toolbar -->
-      <div class="relative flex items-center mx-2 sm:mx-4">
-        <div class="relative flex items-center">
-          <input 
-            type="text" 
-            id="flipbook-search-input" 
-            placeholder="Tìm kiếm trong sách..." 
-            class="w-36 sm:w-64 pl-8 pr-3 py-1.5 bg-slate-800 border border-slate-700 focus:border-amber-400 rounded-lg text-white placeholder-slate-400 text-xs focus:outline-none transition shadow-inner"
-          />
-          <button 
-            id="btn-flipbook-search" 
-            class="absolute left-2 text-amber-400 hover:text-amber-300"
-            title="Tìm kiếm từ khóa trong sách"
-          >
-            <i class="fa-solid fa-magnifying-glass text-xs"></i>
-          </button>
-        </div>
-
-        <!-- Search Results Dropdown -->
-        <div id="flipbook-search-results" class="hidden absolute top-10 right-0 w-72 sm:w-80 bg-slate-900 border-2 border-amber-400/80 rounded-xl shadow-2xl z-50 overflow-hidden"></div>
       </div>
 
       <!-- Controls: Zoom & Fullscreen & Close -->
-      <div class="flex items-center gap-2">
-        <button onclick="Flipbook.zoomOut()" class="p-2 rounded-lg bg-slate-800 hover:bg-slate-700 text-slate-200 text-xs" title="Thu nhỏ">
-          <i class="fa-solid fa-magnifying-glass-minus"></i>
-        </button>
-        <button onclick="Flipbook.resetZoom()" class="px-2 py-1 rounded-lg bg-slate-800 hover:bg-slate-700 text-slate-200 text-[11px]" title="Kích thước gốc">
-          100%
-        </button>
-        <button onclick="Flipbook.zoomIn()" class="p-2 rounded-lg bg-slate-800 hover:bg-slate-700 text-slate-200 text-xs" title="Phóng to">
-          <i class="fa-solid fa-magnifying-glass-plus"></i>
-        </button>
-        <div class="w-px h-5 bg-slate-700 mx-1"></div>
-        <button onclick="Flipbook.toggleFullscreen()" class="p-2 rounded-lg bg-slate-800 hover:bg-slate-700 text-slate-200 text-xs" title="Toàn màn hình">
-          <i class="fa-solid fa-expand"></i>
-        </button>
-        <button onclick="Flipbook.close()" class="p-2 rounded-lg bg-red-600/80 hover:bg-red-600 text-white text-xs ml-1" title="Đóng sách (Esc)">
+      <div class="flex items-center gap-1.5 sm:order-last">
+        <div class="hidden md:flex items-center gap-1.5">
+          <button onclick="Flipbook.zoomOut()" class="fb-btn" title="Thu nhỏ"><i class="fa-solid fa-magnifying-glass-minus"></i></button>
+          <button onclick="Flipbook.resetZoom()" class="fb-btn text-[11px]" title="Kích thước gốc">100%</button>
+          <button onclick="Flipbook.zoomIn()" class="fb-btn" title="Phóng to"><i class="fa-solid fa-magnifying-glass-plus"></i></button>
+          <div class="w-px h-5 bg-slate-700 mx-1"></div>
+        </div>
+        <button onclick="Flipbook.toggleFullscreen()" class="fb-btn hidden sm:inline-flex" title="Toàn màn hình"><i class="fa-solid fa-expand"></i></button>
+        <button onclick="Flipbook.close()" class="fb-btn fb-btn-close" title="Đóng sách (Esc)" aria-label="Đóng sách">
           <i class="fa-solid fa-xmark text-sm"></i>
         </button>
       </div>
+
+      <!-- Search inside 3D Book -->
+      <div class="relative w-full sm:w-auto order-last sm:order-none">
+        <div class="relative flex items-center">
+          <input
+            type="search"
+            id="flipbook-search-input"
+            enterkeyhint="search"
+            placeholder="Tìm kiếm trong sách..."
+            class="w-full sm:w-64 pl-8 pr-3 py-2 sm:py-1.5 bg-slate-800 border border-slate-700 focus:border-amber-400 rounded-lg text-white placeholder-slate-400 text-base sm:text-xs focus:outline-none transition shadow-inner"
+          />
+          <button id="btn-flipbook-search" class="absolute left-2.5 text-amber-400 hover:text-amber-300" title="Tìm kiếm từ khóa trong sách">
+            <i class="fa-solid fa-magnifying-glass text-xs"></i>
+          </button>
+        </div>
+        <div id="flipbook-search-results" class="hidden absolute top-11 right-0 left-0 sm:left-auto sm:w-80 bg-slate-900 border-2 border-amber-400/80 rounded-xl shadow-2xl z-50 overflow-hidden"></div>
+      </div>
     </div>
 
-    <!-- Flipbook Main Stage / 3D Two-page spread -->
-    <div id="flipbook-modal-content" class="flex-1 flex items-center justify-center p-2 sm:p-6 overflow-hidden relative">
-      
-      <!-- Prev Page Floating Button -->
-      <button onclick="Flipbook.prevPage()" class="absolute left-2 sm:left-6 z-30 w-11 h-11 sm:w-13 sm:h-13 rounded-full bg-slate-800/80 hover:bg-amber-500 hover:text-slate-950 text-white border border-slate-700 shadow-2xl flex items-center justify-center transition" title="Trang trước (Mũi tên trái)">
+    <!-- Flipbook Main Stage -->
+    <div id="flipbook-modal-content" class="flex-1 flex items-center justify-center p-2 sm:p-6 overflow-auto relative">
+
+      <button onclick="Flipbook.prevPage()" class="fb-nav-float left-2 sm:left-6" title="Trang trước (Mũi tên trái)" aria-label="Trang trước">
         <i class="fa-solid fa-chevron-left text-lg"></i>
       </button>
 
-      <!-- Zoom Wrapper -->
       <div id="flipbook-zoom-wrapper" class="transition-transform duration-200 ease-out flex items-center justify-center max-w-full max-h-full">
-        
-        <!-- Two Page 3D Book Shell -->
         <div id="flipbook-pages-container" class="flipbook-viewport flex shadow-[0_25px_60px_-15px_rgba(0,0,0,0.9)] rounded-lg border-4 border-slate-800 bg-slate-200">
-          
-          <!-- Left Page -->
-          <div class="w-[310px] sm:w-[380px] md:w-[460px] h-[440px] sm:h-[530px] md:h-[620px] page-sheet page-sheet-left relative overflow-hidden">
-            <div id="flipbook-page-left" class="w-full h-full p-2 sm:p-4 overflow-y-auto"></div>
-            <!-- Center Spine Shadow (Left) -->
+          <div class="fb-sheet fb-sheet-left page-sheet page-sheet-left relative overflow-hidden">
+            <div id="flipbook-page-left" class="w-full h-full p-1 sm:p-4 overflow-y-auto"></div>
             <div class="page-crease page-crease-left"></div>
           </div>
-
-          <!-- Center Spine Fold Line -->
-          <div class="w-1 bg-gradient-to-r from-slate-400 via-slate-600 to-slate-400 shadow-inner z-20"></div>
-
-          <!-- Right Page -->
-          <div class="w-[310px] sm:w-[380px] md:w-[460px] h-[440px] sm:h-[530px] md:h-[620px] page-sheet page-sheet-right relative overflow-hidden">
-            <div id="flipbook-page-right" class="w-full h-full p-2 sm:p-4 overflow-y-auto"></div>
-            <!-- Center Spine Shadow (Right) -->
+          <div class="fb-spine w-1 bg-gradient-to-r from-slate-400 via-slate-600 to-slate-400 shadow-inner z-20"></div>
+          <div class="fb-sheet fb-sheet-right page-sheet page-sheet-right relative overflow-hidden">
+            <div id="flipbook-page-right" class="w-full h-full p-1 sm:p-4 overflow-y-auto"></div>
             <div class="page-crease page-crease-right"></div>
           </div>
-
         </div>
-
       </div>
 
-      <!-- Next Page Floating Button -->
-      <button onclick="Flipbook.nextPage()" class="absolute right-2 sm:right-6 z-30 w-11 h-11 sm:w-13 sm:h-13 rounded-full bg-slate-800/80 hover:bg-amber-500 hover:text-slate-950 text-white border border-slate-700 shadow-2xl flex items-center justify-center transition" title="Trang kế tiếp (Mũi tên phải)">
+      <button onclick="Flipbook.nextPage()" class="fb-nav-float right-2 sm:right-6" title="Trang kế tiếp (Mũi tên phải)" aria-label="Trang kế tiếp">
         <i class="fa-solid fa-chevron-right text-lg"></i>
       </button>
-
     </div>
 
     <!-- Flipbook Bottom Navigation Toolbar -->
-    <div class="h-14 bg-slate-900/95 border-t border-slate-800 px-4 sm:px-8 flex items-center justify-between z-20">
-      <div class="flex items-center gap-2 text-xs text-slate-300">
-        <span id="flipbook-page-indicator" class="font-bold text-amber-300">Trang 1 / 16</span>
+    <div class="fb-bottom bg-slate-900/95 border-t border-slate-800 px-3 sm:px-8 flex items-center justify-between gap-2 z-20">
+      <button onclick="Flipbook.prevPage()" class="fb-btn md:hidden" aria-label="Trang trước"><i class="fa-solid fa-chevron-left"></i></button>
+      <span id="flipbook-page-indicator" class="font-bold text-amber-300 text-xs whitespace-nowrap">Trang 1 / 16</span>
+      <div class="flex-1 max-w-xs sm:max-w-md mx-1 sm:mx-4">
+        <input type="range" id="flipbook-slider" min="0" max="16" value="0" oninput="Flipbook.goToPage(this.value)" class="w-full h-1.5 bg-slate-700 rounded-lg appearance-none cursor-pointer accent-amber-400" aria-label="Chọn trang" />
       </div>
-
-      <!-- Page slider -->
-      <div class="flex-1 max-w-xs sm:max-w-md mx-4">
-        <input 
-          type="range" 
-          id="flipbook-slider" 
-          min="0" 
-          max="16" 
-          value="0" 
-          oninput="Flipbook.goToPage(this.value)" 
-          class="w-full h-1.5 bg-slate-700 rounded-lg appearance-none cursor-pointer accent-amber-400"
-        />
-      </div>
-
-      <div class="flex items-center gap-2 text-xs">
-        <button onclick="Flipbook.goToPage(0)" class="px-2.5 py-1 bg-slate-800 hover:bg-slate-700 text-slate-300 rounded font-medium">
-          Về đầu
-        </button>
-      </div>
+      <button onclick="Flipbook.goToPage(0)" class="fb-btn text-xs hidden sm:inline-flex">Về đầu</button>
+      <button onclick="Flipbook.nextPage()" class="fb-btn md:hidden" aria-label="Trang kế tiếp"><i class="fa-solid fa-chevron-right"></i></button>
     </div>
 
   </div>
 
 
   <!-- ================= MODAL 2: SEARCH RESULTS MODAL ================= -->
-  <div id="search-results-modal" class="hidden fixed inset-0 z-50 bg-black/80 backdrop-blur-sm flex items-center justify-center p-3 sm:p-6">
-    <div class="w-full max-w-3xl bg-slate-900 border border-slate-700 rounded-2xl shadow-2xl overflow-hidden flex flex-col max-h-[88vh]">
-      
-      <!-- Search Header -->
-      <div class="p-4 sm:p-5 bg-slate-800/90 border-b border-slate-700 flex items-center justify-between">
-        <div class="flex items-center gap-2">
+  <div id="search-results-modal" class="hidden fixed inset-0 z-50 bg-black/80 backdrop-blur-sm flex items-end sm:items-center justify-center sm:p-6">
+    <div class="search-sheet w-full max-w-3xl bg-slate-900 border border-slate-700 sm:rounded-2xl shadow-2xl overflow-hidden flex flex-col">
+
+      <div class="p-4 sm:p-5 bg-slate-800/90 border-b border-slate-700 flex items-center justify-between gap-3">
+        <div class="flex items-center gap-2 min-w-0">
           <i class="fa-solid fa-scale-balanced text-amber-400 text-lg"></i>
-          <div>
-            <h3 class="text-sm sm:text-base font-bold text-white">
-              Kết quả tra cứu điều luật: <span id="search-query-display" class="text-amber-300"></span>
+          <div class="min-w-0">
+            <h3 class="text-sm sm:text-base font-bold text-white truncate">
+              Kết quả tra cứu: <span id="search-query-display" class="text-amber-300"></span>
             </h3>
             <span id="search-result-count" class="text-xs text-slate-400"></span>
           </div>
         </div>
-        <button id="btn-close-search-results" class="p-1.5 rounded-lg bg-slate-700 hover:bg-slate-600 text-slate-300">
+        <button id="btn-close-search-results" class="w-9 h-9 flex-shrink-0 rounded-lg bg-slate-700 hover:bg-slate-600 text-slate-300" aria-label="Đóng">
           <i class="fa-solid fa-xmark text-lg"></i>
         </button>
       </div>
 
-      <!-- Search List -->
-      <div id="search-results-list" class="p-4 sm:p-6 overflow-y-auto space-y-3.5 flex-1">
+      <div id="search-results-list" class="p-3 sm:p-6 overflow-y-auto space-y-3 flex-1 overscroll-contain">
         <!-- Rendered via js/search.js -->
       </div>
-
     </div>
   </div>
 
 
   <!-- ================= WIDGET: AI CHATBOT WINDOW ================= -->
-  <div id="ai-chat-widget" class="hidden fixed bottom-6 right-6 sm:bottom-8 sm:right-8 z-40 w-full sm:w-[420px] max-w-[94vw] h-[580px] max-h-[88vh] bg-slate-900 border-2 border-amber-400/80 rounded-3xl shadow-2xl flex flex-col overflow-hidden">
-    
-    <!-- Chat Header -->
-    <div class="px-4 py-3 bg-gradient-to-r from-cand-800 via-blue-950 to-slate-900 border-b border-amber-500/30 flex items-center justify-between">
+  <div id="ai-chat-widget" class="hidden fixed bottom-6 right-6 sm:bottom-8 sm:right-8 z-50 w-[420px] max-w-[94vw] h-[600px] max-h-[88vh] bg-slate-900 border-2 border-amber-400/80 rounded-3xl shadow-2xl flex flex-col overflow-hidden">
+
+    <div class="keep-dark chat-header px-4 py-3 bg-gradient-to-r from-cand-800 via-blue-950 to-slate-900 border-b border-amber-500/30 flex items-center justify-between">
       <div class="flex items-center gap-2.5">
         <div class="w-10 h-10 rounded-full bg-slate-900 p-0.5 border-2 border-amber-400 shadow flex items-center justify-center overflow-hidden">
           <img src="assets/images/logo-cskt.png" class="w-full h-full object-contain" alt="CSKT Logo" />
         </div>
         <div>
-          <h4 class="text-xs sm:text-sm font-black text-amber-300 uppercase leading-none">
-            TRỢ LÝ PHÁP LUẬT SỐ
-          </h4>
+          <h4 class="text-xs sm:text-sm font-black text-amber-300 uppercase leading-none">TRỢ LÝ PHÁP LUẬT SỐ</h4>
           <p class="text-[10px] text-blue-200 mt-0.5 flex items-center gap-1">
             <span class="w-1.5 h-1.5 rounded-full bg-emerald-400 inline-block"></span>
             Đoàn cơ sở Phòng CSKT Công an tỉnh Gia Lai
           </p>
         </div>
       </div>
-
-      <div class="flex items-center gap-1">
-        <button id="btn-close-ai-chat" class="p-1.5 rounded-lg bg-slate-800/80 hover:bg-slate-700 text-slate-300">
-          <i class="fa-solid fa-xmark text-sm"></i>
-        </button>
-      </div>
+      <button id="btn-close-ai-chat" class="w-9 h-9 rounded-lg bg-slate-800/80 hover:bg-slate-700 text-slate-300" aria-label="Đóng trợ lý">
+        <i class="fa-solid fa-xmark text-sm"></i>
+      </button>
     </div>
 
-    <!-- Quick Prompts Horizontal Scroll -->
     <div class="px-3 py-2 bg-slate-950/70 border-b border-slate-800 overflow-x-auto flex items-center gap-1.5 scrollbar-none" id="ai-quick-prompts">
       <!-- Rendered via js/chatbot.js -->
     </div>
 
-    <!-- Chat Messages Body -->
-    <div id="ai-chat-messages" class="flex-1 p-4 overflow-y-auto space-y-3 bg-slate-900/60 text-xs">
-      <!-- Welcome Message -->
+    <div id="ai-chat-messages" class="flex-1 p-3 sm:p-4 overflow-y-auto space-y-3 bg-slate-900/60 text-xs overscroll-contain">
       <div class="flex items-start gap-2.5 mb-3">
         <div class="w-8 h-8 rounded-full bg-slate-900 p-0.5 flex-shrink-0 border border-amber-400/80 shadow overflow-hidden flex items-center justify-center">
           <img src="assets/images/logo-cskt.png" class="w-full h-full object-contain" alt="CSKT Logo" />
@@ -639,29 +561,25 @@
         <div class="max-w-[88%] bg-slate-800 text-slate-100 border border-slate-700/80 px-3.5 py-3 rounded-2xl rounded-tl-none text-xs leading-relaxed shadow chat-bubble-tail-left">
           <p class="font-bold text-amber-300 text-[11px] mb-1">Kính chào đồng chí và quý công dân!</p>
           <p>Tôi là <strong>Trợ lý Pháp luật số</strong> của Đoàn cơ sở Phòng Cảnh sát kinh tế – Công an tỉnh Gia Lai (công trình tiên phong thực hiện Nghị quyết số 57-NQ/TW).</p>
-          <p class="mt-1 text-slate-300">Tôi sẵn sàng hỗ trợ giải đáp các quy định pháp luật về: <strong>Xử lý vi phạm hành chính 2025 (Điều 18a trên môi trường điện tử), Buôn lậu, Trốn thuế, Cho vay nặng lãi, Rửa tiền, Đấu thầu, Doanh nghiệp</strong> và Nghị quyết 57-NQ/TW.</p>
+          <p class="mt-1 text-slate-300">Mỗi câu trả lời đều kèm <strong>nguyên văn căn cứ pháp lý</strong> trích từ văn bản gốc trong tủ sách, có số trang để đồng chí đối chiếu.</p>
         </div>
       </div>
     </div>
 
-    <!-- Chat Input Footer -->
-    <div class="p-3 bg-slate-950 border-t border-slate-800">
+    <div class="chat-footer p-3 bg-slate-950 border-t border-slate-800">
       <div class="relative flex items-center">
-        <textarea 
-          id="ai-chat-input" 
-          rows="1" 
-          placeholder="Nhập câu hỏi pháp luật của đồng chí..." 
-          class="w-full pl-3.5 pr-12 py-2.5 bg-slate-800 border border-slate-700 focus:border-amber-400 rounded-xl text-white placeholder-slate-400 text-xs focus:outline-none resize-none leading-relaxed"
+        <textarea
+          id="ai-chat-input"
+          rows="1"
+          enterkeyhint="send"
+          placeholder="Nhập câu hỏi pháp luật của đồng chí..."
+          class="w-full pl-3.5 pr-12 py-2.5 bg-slate-800 border border-slate-700 focus:border-amber-400 rounded-xl text-white placeholder-slate-400 text-base sm:text-xs focus:outline-none resize-none leading-relaxed"
         ></textarea>
-        <button 
-          id="btn-send-chat" 
-          class="absolute right-1.5 p-2 bg-amber-500 hover:bg-amber-400 text-slate-950 rounded-lg transition shadow"
-          title="Gửi câu hỏi"
-        >
+        <button id="btn-send-chat" class="absolute right-1.5 w-9 h-9 bg-amber-500 hover:bg-amber-400 text-slate-950 rounded-lg transition shadow" title="Gửi câu hỏi" aria-label="Gửi câu hỏi">
           <i class="fa-solid fa-paper-plane text-xs"></i>
         </button>
       </div>
-      <div class="mt-1.5 flex items-center justify-between text-[10px] text-slate-400">
+      <div class="mt-1.5 hidden sm:flex items-center justify-between text-[10px] text-slate-400">
         <span>Nhấn Enter để gửi</span>
         <span class="text-amber-400/80 font-medium">Đoàn CSKT Công an tỉnh Gia Lai</span>
       </div>
@@ -671,49 +589,35 @@
 
 
   <!-- ================= WIDGET: INTERACTIVE CSKT EMBLEM MASCOT GUIDE ================= -->
-  <div id="chibi-mascot-widget" class="fixed bottom-4 left-4 z-30 flex items-end gap-2 pointer-events-auto">
-    
-    <!-- Mascot Avatar (Click to cycle tip) -->
-    <div class="relative w-16 h-20 sm:w-20 sm:h-24 cursor-pointer group" title="Bấm vào để xem các chỉ dẫn nghiệp vụ!">
-      <img 
-        id="chibi-character-img" 
-        src="assets/images/logo-cskt.png" 
-        class="w-full h-full object-contain drop-shadow-[0_8px_16px_rgba(0,0,0,0.6)] transition-transform group-hover:scale-110" 
-        alt="Biểu trưng CSKT" 
-      />
+  <div id="chibi-mascot-widget" class="fixed bottom-3 left-3 sm:bottom-4 sm:left-4 z-30 flex items-end gap-2 pointer-events-none">
+    <div class="relative w-12 h-14 sm:w-20 sm:h-24 cursor-pointer group pointer-events-auto" title="Bấm vào để xem các chỉ dẫn nghiệp vụ!">
+      <img id="chibi-character-img" src="assets/images/logo-cskt.png" class="w-full h-full object-contain drop-shadow-[0_8px_16px_rgba(0,0,0,0.6)] transition-transform group-hover:scale-110" alt="Biểu trưng CSKT" />
     </div>
 
-    <!-- Mascot Speech Bubble -->
-    <div id="chibi-speech-bubble" class="max-w-[240px] sm:max-w-[280px] p-3 bg-slate-900 border-2 border-amber-400/80 rounded-2xl rounded-bl-none shadow-2xl relative text-xs leading-relaxed">
-      <button id="btn-dismiss-speech" class="absolute top-1.5 right-1.5 text-slate-400 hover:text-white" title="Ẩn bóng thoại">
-        <i class="fa-solid fa-xmark text-[10px]"></i>
+    <div id="chibi-speech-bubble" class="pointer-events-auto max-w-[210px] sm:max-w-[280px] p-3 pr-6 bg-slate-900 border-2 border-amber-400/80 rounded-2xl rounded-bl-none shadow-2xl relative text-xs leading-relaxed">
+      <button id="btn-dismiss-speech" class="absolute top-1 right-1 w-6 h-6 text-slate-400 hover:text-white" title="Ẩn bóng thoại" aria-label="Ẩn bóng thoại">
+        <i class="fa-solid fa-xmark text-[11px]"></i>
       </button>
       <div id="chibi-mascot-label" class="flex items-center gap-1.5 mb-1 text-[10px] font-bold text-amber-300 uppercase">
-        <i class="fa-solid fa-shield-halved text-amber-400"></i> Đoàn cơ sở Phòng CSKT Công an tỉnh Gia Lai:
+        <i class="fa-solid fa-shield-halved text-amber-400"></i> Đoàn cơ sở Phòng CSKT:
       </div>
       <p id="chibi-speech-text" class="text-slate-200 text-[11px]">
         Kính chào đồng chí! Hãy bấm vào các cuốn sách trên kệ để trải nghiệm đọc 3D lật trang chân thực nhé!
       </p>
     </div>
-
-  </div>
-      <p id="chibi-speech-text" class="text-slate-200 text-[11px]">
-        Chào đồng chí! Hãy bấm vào các cuốn sách trên kệ để trải nghiệm đọc 3D lật trang chân thực nhé!
-      </p>
-    </div>
-
   </div>
 
 
   <!-- ================= JAVASCRIPT MODULES ================= -->
-  <script src="js/diagnostics.js"></script>
-  <script src="js/data.js"></script>
-  <script src="js/chibi.js"></script>
-  <script src="js/flipbook.js"></script>
-  <script src="js/bookshelf.js"></script>
-  <script src="js/search.js"></script>
-  <script src="js/chatbot.js"></script>
-  <script src="js/app.js"></script>
+  <script src="js/diagnostics.js?v=20261111c"></script>
+  <script src="js/data.js?v=20261111c"></script>
+  <script src="js/legal-library.js?v=20261111c"></script>
+  <script src="js/chibi.js?v=20261111c"></script>
+  <script src="js/flipbook.js?v=20261111c"></script>
+  <script src="js/bookshelf.js?v=20261111c"></script>
+  <script src="js/search.js?v=20261111c"></script>
+  <script src="js/chatbot.js?v=20261111c"></script>
+  <script src="js/app.js?v=20261111c"></script>
 
 </body>
 </html>

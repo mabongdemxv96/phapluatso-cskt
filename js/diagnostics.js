@@ -155,7 +155,7 @@ const AppDiagnostics = {
     // 1. Floating Badge in bottom-left
     const badge = document.createElement('div');
     badge.id = 'diag-badge';
-    badge.className = 'fixed bottom-4 left-4 sm:bottom-4 sm:left-4 z-50 flex items-center gap-1.5 px-3 py-1.5 bg-slate-900/95 hover:bg-slate-800 text-slate-200 border border-slate-700/80 hover:border-amber-400/80 rounded-full text-[11px] font-sans shadow-2xl cursor-pointer transition select-none';
+    badge.className = 'fixed bottom-4 right-4 z-30 hidden md:flex items-center gap-1.5 px-3 py-1.5 bg-slate-900/95 hover:bg-slate-800 text-slate-200 border border-slate-700/80 hover:border-amber-400/80 rounded-full text-[11px] font-sans shadow-2xl cursor-pointer transition select-none';
     badge.title = 'Bấm để mở Bảng Chẩn đoán & Ghi vết Lỗi (hoặc nhấn Ctrl + Shift + D)';
     badge.innerHTML = `
       <span id="diag-status-dot" class="w-2 h-2 rounded-full bg-emerald-400 animate-pulse"></span>

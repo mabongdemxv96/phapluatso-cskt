@@ -1,0 +1,4 @@
+{
+  "_ghi_chu": "Danh mục văn bản pháp luật gốc. Tệp này được GitHub Action tự cập nhật mỗi khi có PDF mới trong thư mục tai-lieu-phap-ly/. Có thể sửa tay các trường title, number, category (hinh-su | doanh-nghiep | thue-tai-chinh | nghiep-vu) – các trường này được giữ lại khi cập nhật.",
+  "files": []
+}
