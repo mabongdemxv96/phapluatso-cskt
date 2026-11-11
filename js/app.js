@@ -5,43 +5,37 @@
  */
 
 // Theme Management (Chế độ Sáng - Tối)
-window.initTheme = function() {
-  const savedTheme = localStorage.getItem('cskt_theme') || 'dark';
-  const themeBtn = document.getElementById('btn-toggle-theme');
+// Chưa chọn giao diện -> theo cài đặt sáng/tối của thiết bị
+function readSavedTheme() {
+  try {
+    const saved = localStorage.getItem('cskt_theme');
+    if (saved === 'light' || saved === 'dark') return saved;
+  } catch (e) { /* trình duyệt chặn bộ nhớ */ }
+  return window.matchMedia && window.matchMedia('(prefers-color-scheme: light)').matches ? 'light' : 'dark';
+}
+
+function applyTheme(isLight) {
+  document.body.classList.toggle('light-mode', isLight);
+  document.documentElement.classList.toggle('light-pending', isLight);
   const themeIcon = document.getElementById('theme-icon');
   const themeText = document.getElementById('theme-text');
+  const meta = document.getElementById('meta-theme-color');
+  if (themeIcon) themeIcon.className = isLight ? 'fa-solid fa-moon text-blue-700' : 'fa-solid fa-sun text-amber-400';
+  if (themeText) themeText.textContent = isLight ? 'Giao diện tối' : 'Giao diện sáng';
+  if (meta) meta.setAttribute('content', isLight ? '#ffffff' : '#0b2545');
+}
 
-  if (savedTheme === 'light') {
-    document.body.classList.add('light-mode');
-    if (themeIcon) themeIcon.className = 'fa-solid fa-moon text-amber-500';
-    if (themeText) themeText.textContent = 'Giao diện tối';
-  } else {
-    document.body.classList.remove('light-mode');
-    if (themeIcon) themeIcon.className = 'fa-solid fa-sun text-amber-400';
-    if (themeText) themeText.textContent = 'Giao diện sáng';
-  }
-
-  if (themeBtn) {
-    themeBtn.onclick = () => window.toggleTheme();
-  }
+window.initTheme = function() {
+  applyTheme(readSavedTheme() === 'light');
+  const themeBtn = document.getElementById('btn-toggle-theme');
+  if (themeBtn) themeBtn.onclick = () => window.toggleTheme();
 };
 
 window.toggleTheme = function() {
-  const isLight = document.body.classList.toggle('light-mode');
-  const themeIcon = document.getElementById('theme-icon');
-  const themeText = document.getElementById('theme-text');
-
-  if (isLight) {
-    localStorage.setItem('cskt_theme', 'light');
-    if (themeIcon) themeIcon.className = 'fa-solid fa-moon text-amber-500';
-    if (themeText) themeText.textContent = 'Giao diện tối';
-    if (window.AppDiagnostics) window.AppDiagnostics.logAction('Chuyển sang Chế độ Sáng');
-  } else {
-    localStorage.setItem('cskt_theme', 'dark');
-    if (themeIcon) themeIcon.className = 'fa-solid fa-sun text-amber-400';
-    if (themeText) themeText.textContent = 'Giao diện sáng';
-    if (window.AppDiagnostics) window.AppDiagnostics.logAction('Chuyển sang Chế độ Tối');
-  }
+  const isLight = !document.body.classList.contains('light-mode');
+  applyTheme(isLight);
+  try { localStorage.setItem('cskt_theme', isLight ? 'light' : 'dark'); } catch (e) { /* bỏ qua */ }
+  if (window.AppDiagnostics) window.AppDiagnostics.logAction(isLight ? 'Chuyển sang Chế độ Sáng' : 'Chuyển sang Chế độ Tối');
 };
 
 // Mở trực tiếp Nghị quyết 57-NQ/TW trong sách 3D
@@ -75,6 +69,12 @@ document.addEventListener('DOMContentLoaded', () => {
   if (window.AIChatbot) AIChatbot.init();
   if (window.ChibiMascot) ChibiMascot.init();
 
+  // Nạp thư viện văn bản gốc: dựng sách 3D + trích xuất toàn văn từng điều
+  if (window.LegalLibrary) {
+    if (window.Bookshelf) Bookshelf.renderStatus();
+    LegalLibrary.init();
+  }
+
   // Mobile Navigation Menu Toggle
   const mobileMenuBtn = document.getElementById('btn-mobile-menu');
   const mobileMenu = document.getElementById('mobile-menu');
@@ -97,10 +97,13 @@ document.addEventListener('DOMContentLoaded', () => {
       const flipModal = document.getElementById('flipbook-modal');
       const searchModal = document.getElementById('search-results-modal');
 
+      const chat = document.getElementById('ai-chat-widget');
       if (flipModal && !flipModal.classList.contains('hidden')) {
         Flipbook.close();
       } else if (searchModal && !searchModal.classList.contains('hidden')) {
         LawSearch.closeResults();
+      } else if (chat && !chat.classList.contains('hidden')) {
+        AIChatbot.closeChat();
       }
     }
 

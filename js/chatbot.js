@@ -48,10 +48,7 @@ const AIChatbot = {
     if (!this.chatWidget) return;
     if (this.chatWidget.classList.contains('hidden')) {
       this.chatWidget.classList.remove('hidden');
-      if (window.innerWidth < 640) {
-        this.chatWidget.classList.add('fixed', 'inset-0', 'z-50');
-      }
-      this.chatInput.focus();
+      if (window.innerWidth >= 640) this.chatInput.focus();
       if (window.ChibiMascot) {
         window.ChibiMascot.speak("Chào đồng chí! Tôi là Trợ lý Pháp luật số của Đoàn cơ sở Phòng CSKT Công an tỉnh Gia Lai. Đồng chí cần giải đáp quy định gì ạ?");
       }
@@ -109,23 +106,27 @@ const AIChatbot = {
     // Show AI typing indicator
     const typingId = this.addTypingIndicator();
 
+    // Truy hồi căn cứ pháp lý nguyên văn từ thư viện văn bản gốc
+    const sources = window.LegalLibrary ? LegalLibrary.retrieve(message, 5) : [];
+
     try {
       let reply = '';
+      let offline = false;
       try {
-        // Direct Call with requested model, fallback if 404
-        reply = await this.callAIEndpoint(message, this.model);
+        reply = await this.callAIEndpoint(message, this.model, sources);
       } catch (err1) {
         console.warn(`Thử model ${this.model} không thành công, chuyển sang ${this.fallbackModel}:`, err1);
         try {
-          reply = await this.callAIEndpoint(message, this.fallbackModel);
+          reply = await this.callAIEndpoint(message, this.fallbackModel, sources);
         } catch (err2) {
           console.warn("Chuyển sang chế độ dữ liệu chuyên gia offline:", err2);
-          reply = await this.getOfflineSmartAnswer(message);
+          offline = true;
+          reply = await this.getOfflineSmartAnswer(message, sources);
         }
       }
 
       this.removeTypingIndicator(typingId);
-      this.addAiMessage(reply);
+      this.addAiMessage(reply, offline ? [] : sources);
     } catch (err) {
       this.removeTypingIndicator(typingId);
       console.error("Lỗi AI Chatbot:", err);
@@ -136,7 +137,24 @@ const AIChatbot = {
     }
   },
 
-  async callAIEndpoint(userPrompt, modelName) {
+  buildSourceContext(sources) {
+    if (!sources || !sources.length) {
+      return `KHÔNG tìm thấy điều luật liên quan trong thư viện văn bản gốc của đơn vị cho câu hỏi này.
+Hãy nói rõ điều đó ở đầu câu trả lời ("Thư viện văn bản gốc chưa có điều luật tương ứng"), chỉ đưa ra định hướng chung mang tính tham khảo, KHÔNG được đặt nội dung trong ngoặc kép như trích dẫn nguyên văn, và khuyến nghị đồng chí đối chiếu văn bản gốc.`;
+    }
+    const MAX = 14000;
+    let used = 0;
+    const blocks = [];
+    sources.forEach((s, i) => {
+      let text = s.unit.text;
+      if (used + text.length > MAX) text = text.slice(0, Math.max(800, MAX - used)) + ' […]';
+      used += text.length;
+      blocks.push(`[Nguồn ${i + 1}] ${LegalLibrary.citationLabel(s.unit, s.doc)} (trang ${s.unit.page})\n${text}`);
+    });
+    return `CÁC CĂN CỨ PHÁP LÝ NGUYÊN VĂN (trích từ file PDF gốc của đơn vị):\n\n${blocks.join('\n\n---\n\n')}`;
+  },
+
+  async callAIEndpoint(userPrompt, modelName, sources = []) {
     const systemPrompt = `Bạn là "Trợ lý Pháp luật số" của Đoàn cơ sở Phòng Cảnh sát kinh tế – Công an tỉnh Gia Lai (công trình thanh niên tiên phong thực hiện Nghị quyết số 57-NQ/TW của Bộ Chính trị về đổi mới sáng tạo, phát triển khoa học công nghệ và chuyển đổi số).
 Quy tắc trả lời bắt buộc:
 1. Luôn giữ phong thái chuẩn mực, trang trọng của người chiến sĩ Công an nhân dân Việt Nam, xưng "tôi" và gọi người dùng là "đồng chí" hoặc "quý công dân".
@@ -146,7 +164,11 @@ Quy tắc trả lời bắt buộc:
    - Nghị quyết số 57-NQ/TW về đột phá khoa học công nghệ và chuyển đổi số.
 3. Luôn chỉ rõ căn cứ điều luật cụ thể (Điều, Khoản, Luật/Nghị định).
 4. Phân tích trọng tâm câu hỏi của đồng chí, nêu rõ các mốc thời gian, mức phạt, điều kiện áp dụng. Trả lời đầy đủ toàn bộ nội dung, không ngắt quãng giữa chừng.
-5. Định dạng câu trả lời rõ ràng bằng Markdown (dùng gạch đầu dòng, in đậm các ý chính).`;
+5. Định dạng câu trả lời rõ ràng bằng Markdown (dùng gạch đầu dòng, in đậm các ý chính).
+6. QUY TẮC TRÍCH DẪN TUYỆT ĐỐI: Khi có "CÁC CĂN CỨ PHÁP LÝ NGUYÊN VĂN" đi kèm câu hỏi, chỉ được dùng các nguồn đó làm căn cứ. Mọi trích dẫn phải chép NGUYÊN VĂN từng chữ trong ngoặc kép và ghi rõ [Nguồn n], Điều, Khoản, Điểm. Không tự suy diễn mức phạt, số điều, thời hạn không có trong nguồn. Nếu nguồn không đủ để trả lời, phải nói rõ phần nào chưa có căn cứ trong thư viện.`;
+
+    const contextBlock = this.buildSourceContext(sources);
+    const fullPrompt = `${contextBlock}\n\n=====\nCÂU HỎI CỦA ĐỒNG CHÍ: ${userPrompt}`;
 
     const endpoint = `https://generativelanguage.googleapis.com/v1beta/models/${modelName}:generateContent?key=${this.apiKey.trim()}`;
 
@@ -157,7 +179,7 @@ Quy tắc trả lời bắt buộc:
       contents: [
         {
           role: "user",
-          parts: [{ text: userPrompt }]
+          parts: [{ text: fullPrompt }]
         }
       ],
       generationConfig: {
@@ -187,8 +209,17 @@ Quy tắc trả lời bắt buộc:
     }
   },
 
-  async getOfflineSmartAnswer(query) {
-    await new Promise(r => setTimeout(r, 500));
+  async getOfflineSmartAnswer(query, sources = []) {
+    await new Promise(r => setTimeout(r, 400));
+
+    // Ưu tiên trả lời bằng nguyên văn điều luật trích từ văn bản gốc
+    if (sources.length) {
+      const parts = sources.slice(0, 3).map((s, i) =>
+        `### [Nguồn ${i + 1}] ${LegalLibrary.citationLabel(s.unit, s.doc)}\n*Trang ${s.unit.page} – tệp gốc: ${s.doc.fileName}*\n\n${s.unit.text}`
+      );
+      return `Kính chào đồng chí! Đường truyền tới máy chủ AI đang gián đoạn, tôi xin cung cấp **nguyên văn các căn cứ pháp lý** liên quan nhất trong thư viện văn bản gốc của đơn vị:\n\n${parts.join('\n\n')}`;
+    }
+
     const q = query.toLowerCase();
 
     if (q.includes("thời hiệu") || (q.includes("xử phạt") && q.includes("hành chính")) || q.includes("điều 6")) {
@@ -214,7 +245,7 @@ Quy tắc trả lời bắt buộc:
     const msgEl = document.createElement('div');
     msgEl.className = 'flex justify-end mb-3';
     msgEl.innerHTML = `
-      <div class="max-w-[85%] bg-blue-700 text-white px-3.5 py-2.5 rounded-2xl rounded-tr-none text-xs leading-relaxed shadow chat-bubble-tail-right">
+      <div class="keep-dark max-w-[85%] bg-blue-700 text-white px-3.5 py-2.5 rounded-2xl rounded-tr-none text-xs leading-relaxed shadow chat-bubble-tail-right">
         ${this.escapeHtml(text)}
       </div>
     `;
@@ -222,7 +253,36 @@ Quy tắc trả lời bắt buộc:
     this.scrollToBottom();
   },
 
-  addAiMessage(markdownText) {
+  renderCitations(sources) {
+    if (!sources || !sources.length) return '';
+    const esc = LegalLibrary.escapeHtml;
+    const items = sources.map((s, i) => `
+      <details class="citation-item">
+        <summary>
+          <span class="citation-num">${i + 1}</span>
+          <span class="flex-1">${esc(LegalLibrary.citationLabel(s.unit, s.doc))}</span>
+        </summary>
+        <div class="verbatim-text text-[11px] mt-2">${esc(s.unit.text)}</div>
+        <div class="flex flex-wrap gap-1.5 mt-2">
+          <button onclick="LawSearch.copyUnit('${s.unit.id}')" class="citation-btn"><i class="fa-regular fa-copy"></i> Sao chép</button>
+          <button onclick="AIChatbot.openSource('${s.doc.id}', ${s.unit.page})" class="citation-btn is-primary"><i class="fa-solid fa-book-open"></i> Mở trang ${s.unit.page} bản gốc</button>
+        </div>
+      </details>`).join('');
+    return `
+      <div class="citation-box">
+        <div class="citation-head"><i class="fa-solid fa-file-shield"></i> Căn cứ pháp lý – trích nguyên văn từ văn bản gốc</div>
+        ${items}
+      </div>`;
+  },
+
+  openSource(docId, page) {
+    const book = window.Bookshelf ? Bookshelf.findBook(docId) : null;
+    if (!book) return;
+    if (window.innerWidth < 640) this.closeChat();
+    Flipbook.openBook(book, page - 1);
+  },
+
+  addAiMessage(markdownText, sources = []) {
     const msgEl = document.createElement('div');
     msgEl.className = 'flex items-start gap-2.5 mb-4';
     msgEl.innerHTML = `
@@ -237,6 +297,7 @@ Quy tắc trả lời bắt buộc:
         <div class="prose prose-invert prose-xs text-slate-200">
           ${this.formatMarkdown(markdownText)}
         </div>
+        ${this.renderCitations(sources)}
       </div>
     `;
     this.chatBody.appendChild(msgEl);
@@ -291,7 +352,7 @@ Quy tắc trả lời bắt buộc:
 
   formatMarkdown(text) {
     if (!text) return '';
-    let out = text;
+    let out = this.escapeHtml(text).replace(/&#39;/g, "'").replace(/&quot;/g, '"');
 
     // Code blocks ``` ... ```
     out = out.replace(/```(?:[a-z]*\n)?([\s\S]*?)```/g, '<pre class="bg-slate-900/90 p-2.5 rounded text-[11px] font-mono text-amber-200 overflow-x-auto my-2 border border-slate-700"><code>$1</code></pre>');

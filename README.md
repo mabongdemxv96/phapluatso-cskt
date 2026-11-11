@@ -37,6 +37,23 @@
 
 ---
 
+## 📥 QUY CHUẨN TẢI LÊN VĂN BẢN PHÁP LUẬT MỚI
+
+Mỗi tệp PDF văn bản pháp luật đưa lên hệ thống đều được xử lý theo 3 bước:
+
+1. **Lưu giữ nguyên trạng 100% tệp gốc**
+   - Văn bản dùng chung: chép PDF vào thư mục [`tai-lieu-phap-ly/`](tai-lieu-phap-ly/) rồi đẩy lên GitHub. GitHub Action tự cập nhật `danh-muc.json`.
+   - Văn bản cá nhân: bấm **"Tải văn bản PDF"** (hoặc kéo thả vào kệ sách). Tệp gốc được lưu nguyên khối trong trình duyệt của máy đó.
+   - Mọi sách đều có nút tải về đúng tệp PDF gốc.
+2. **Tự động tạo sách 3D lật trang** đọc trực tiếp từ chính file PDF gốc. Trên điện thoại sách hiển thị 1 trang mỗi lần và vuốt ngang để lật trang.
+3. **Trích xuất toàn văn từng Điều** nạp vào Thanh tìm kiếm kính lúp và bộ nhớ Trợ lý AI:
+   - Kết quả tìm kiếm hiển thị nguyên văn điều luật, kèm số trang và nút mở đúng trang trong sách 3D.
+   - Trợ lý AI chỉ được dùng các điều luật truy xuất được làm căn cứ. Dưới mỗi câu trả lời, hệ thống tự gắn khung **"Căn cứ pháp lý – trích nguyên văn"** lấy thẳng từ văn bản gốc, không qua AI.
+
+> PDF ảnh scan (không có lớp chữ) vẫn đọc được trong sách 3D nhưng không trích xuất được điều luật; hệ thống sẽ gắn nhãn "PDF ảnh scan".
+
+---
+
 ## 🚀 HƯỚNG DẪN CHẠY VÀ SỬ DỤNG TRÊN MÁY TÍNH
 
 ### Cách 1: Chạy nhanh bằng file 1-click (Khuyên dùng)

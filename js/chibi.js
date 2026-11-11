@@ -30,7 +30,8 @@ const ChibiMascot = {
 
     // Auto rotate tips every 35s
     setInterval(() => {
-      if (this.speechBubble && !this.speechBubble.classList.contains('hidden')) {
+      // Trên điện thoại không tự đổi lời thoại để bóng thoại không che nội dung
+      if (window.innerWidth >= 768 && this.speechBubble && !this.speechBubble.classList.contains('hidden')) {
         this.nextTip();
       }
     }, 35000);

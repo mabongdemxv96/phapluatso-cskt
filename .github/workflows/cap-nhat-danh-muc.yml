@@ -1,0 +1,57 @@
+name: Cập nhật danh mục văn bản
+
+on:
+  push:
+    paths:
+      - 'tai-lieu-phap-ly/**'
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+jobs:
+  manifest:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Tạo danh mục từ các tệp PDF gốc
+        run: |
+          node <<'EOF'
+          const fs = require('fs');
+          const path = require('path');
+          const crypto = require('crypto');
+          const dir = 'tai-lieu-phap-ly';
+          const manifestPath = path.join(dir, 'danh-muc.json');
+          let old = { files: [] };
+          try { old = JSON.parse(fs.readFileSync(manifestPath, 'utf8')); } catch (e) {}
+          const oldMap = new Map((old.files || []).map(f => [f.file, f]));
+          const files = fs.readdirSync(dir)
+            .filter(f => /\.pdf$/i.test(f))
+            .sort((a, b) => a.localeCompare(b, 'vi'))
+            .map(file => {
+              const buf = fs.readFileSync(path.join(dir, file));
+              const prev = oldMap.get(file) || {};
+              return {
+                ...prev,
+                file,
+                size: buf.length,
+                sha: crypto.createHash('sha256').update(buf).digest('hex').slice(0, 16)
+              };
+            });
+          const out = { ...old, files };
+          fs.writeFileSync(manifestPath, JSON.stringify(out, null, 2) + '\n');
+          console.log(`Danh mục: ${files.length} văn bản`);
+          EOF
+
+      - name: Lưu danh mục
+        run: |
+          if git diff --quiet -- tai-lieu-phap-ly/danh-muc.json; then
+            echo "Danh mục không thay đổi"
+          else
+            git config user.name "github-actions[bot]"
+            git config user.email "41898333+github-actions[bot]@users.noreply.github.com"
+            git add tai-lieu-phap-ly/danh-muc.json
+            git commit -m "Tự động cập nhật danh mục văn bản pháp luật"
+            git push
+          fi
