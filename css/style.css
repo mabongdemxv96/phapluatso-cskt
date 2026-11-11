@@ -1,0 +1,350 @@
+/* ========================================================
+   KHÔNG GIAN PHÁP LUẬT SỐ & TRỢ LÝ AI HỎI ĐÁP PHÁP LUẬT
+   Đoàn cơ sở Phòng Cảnh sát kinh tế - Công an tỉnh Gia Lai
+   ======================================================== */
+
+:root {
+  --color-cand-blue: #0b2545;
+  --color-cand-green: #1b5e20;
+  --color-doan-blue: #0066cc;
+  --color-gold: #f59e0b;
+  --color-gold-light: #fef08a;
+  --wood-top: #8b5a2b;
+  --wood-front: #5c3a1e;
+  --wood-shadow: rgba(30, 15, 5, 0.6);
+}
+
+/* Custom Scrollbars */
+::-webkit-scrollbar {
+  width: 7px;
+  height: 7px;
+}
+::-webkit-scrollbar-track {
+  background: #0f172a;
+}
+::-webkit-scrollbar-thumb {
+  background: #1e3a8a;
+  border-radius: 4px;
+}
+::-webkit-scrollbar-thumb:hover {
+  background: #2563eb;
+}
+
+/* Background Ambient Glow */
+.bg-cand-gradient {
+  background: radial-gradient(circle at 50% 20%, #173860 0%, #0a192f 50%, #050d1a 100%);
+}
+
+/* 3D Bookshelf Environment */
+.bookshelf-stage {
+  perspective: 1200px;
+  perspective-origin: 50% 30%;
+}
+
+.shelf-tier {
+  position: relative;
+  transform-style: preserve-3d;
+  margin-bottom: 2.5rem;
+}
+
+.shelf-surface {
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  height: 22px;
+  background: linear-gradient(180deg, #966033 0%, #6d421d 60%, #46280e 100%);
+  border-radius: 3px;
+  box-shadow: 0 14px 28px rgba(0, 0, 0, 0.45), 0 5px 10px rgba(0, 0, 0, 0.3);
+  border-top: 2px solid #b37d46;
+  border-bottom: 3px solid #2e1a0a;
+}
+
+.shelf-surface::before {
+  content: '';
+  position: absolute;
+  top: -14px;
+  left: 0;
+  right: 0;
+  height: 14px;
+  background: linear-gradient(90deg, #533114 0%, #7d4920 15%, #925828 50%, #7d4920 85%, #533114 100%);
+  transform: rotateX(60deg);
+  transform-origin: bottom center;
+  box-shadow: inset 0 2px 5px rgba(255, 255, 255, 0.15);
+}
+
+/* 3D Standing Book Item */
+.book-3d {
+  position: relative;
+  width: 140px;
+  height: 210px;
+  cursor: pointer;
+  transition: all 0.4s cubic-bezier(0.165, 0.84, 0.44, 1);
+  transform-style: preserve-3d;
+  transform-origin: bottom center;
+}
+
+@media (min-width: 640px) {
+  .book-3d {
+    width: 160px;
+    height: 235px;
+  }
+}
+
+.book-3d:hover {
+  transform: translateY(-24px) translateZ(35px) rotateY(-12deg) scale(1.05);
+}
+
+.book-cover {
+  position: absolute;
+  inset: 0;
+  border-radius: 4px 10px 10px 4px;
+  box-shadow: -4px 6px 18px rgba(0, 0, 0, 0.45), 3px 0 10px rgba(0, 0, 0, 0.2);
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  padding: 14px 10px;
+  color: white;
+  user-select: none;
+  overflow: hidden;
+  border-left: 5px solid rgba(255, 255, 255, 0.35);
+}
+
+/* Book Spine 3D illusion effect */
+.book-cover::after {
+  content: '';
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  left: 0;
+  width: 16px;
+  background: linear-gradient(90deg, rgba(255,255,255,0.3) 0%, rgba(255,255,255,0.05) 50%, rgba(0,0,0,0.3) 100%);
+}
+
+/* Gold foil embossed effect on book */
+.gold-foil {
+  color: #fef08a;
+  text-shadow: 0 1px 2px rgba(0,0,0,0.6), 0 0 10px rgba(253, 224, 71, 0.4);
+}
+
+/* 3D Flipbook Reader Container */
+.flipbook-viewport {
+  perspective: 2000px;
+  transform-style: preserve-3d;
+}
+
+.flipbook-page-wrap {
+  transform-style: preserve-3d;
+  transition: transform 0.6s cubic-bezier(0.645, 0.045, 0.355, 1);
+}
+
+.page-sheet {
+  background: #fbfbfb;
+  box-shadow: inset 0 0 40px rgba(0, 0, 0, 0.06), 0 5px 20px rgba(0, 0, 0, 0.25);
+  position: relative;
+  overflow: hidden;
+}
+
+.page-sheet-left {
+  border-radius: 6px 0 0 6px;
+  border-right: 1px solid #d1d5db;
+}
+
+.page-sheet-right {
+  border-radius: 0 6px 6px 0;
+  border-left: 1px solid #d1d5db;
+}
+
+.page-crease {
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  width: 35px;
+  pointer-events: none;
+  z-index: 10;
+}
+
+.page-crease-left {
+  right: 0;
+  background: linear-gradient(90deg, transparent 0%, rgba(0,0,0,0.02) 60%, rgba(0,0,0,0.18) 100%);
+}
+
+.page-crease-right {
+  left: 0;
+  background: linear-gradient(90deg, rgba(0,0,0,0.18) 0%, rgba(0,0,0,0.02) 40%, transparent 100%);
+}
+
+/* Floating Chibi Mascot */
+@keyframes chibiFloat {
+  0%, 100% {
+    transform: translateY(0px) rotate(0deg);
+  }
+  50% {
+    transform: translateY(-8px) rotate(1deg);
+  }
+}
+
+.animate-chibi-float {
+  animation: chibiFloat 3.6s ease-in-out infinite;
+}
+
+/* Pulse Glow */
+@keyframes goldPulse {
+  0%, 100% {
+    box-shadow: 0 0 0 0 rgba(245, 158, 11, 0.5);
+  }
+  50% {
+    box-shadow: 0 0 0 12px rgba(245, 158, 11, 0);
+  }
+}
+
+.pulse-gold {
+  animation: goldPulse 2.4s infinite;
+}
+
+/* Chat bubble */
+.chat-bubble-tail-left::after {
+  content: '';
+  position: absolute;
+  bottom: 12px;
+  left: -8px;
+  width: 0;
+  height: 0;
+  border-top: 8px solid transparent;
+  border-bottom: 8px solid transparent;
+  border-right: 8px solid #ffffff;
+}
+
+.chat-bubble-tail-right::after {
+  content: '';
+  position: absolute;
+  bottom: 12px;
+  right: -8px;
+  width: 0;
+  height: 0;
+  border-top: 8px solid transparent;
+  border-bottom: 8px solid transparent;
+  border-left: 8px solid #2563eb;
+}
+
+/* Glassmorphism */
+.glass-panel {
+  background: rgba(15, 30, 55, 0.78);
+  backdrop-filter: blur(14px);
+  -webkit-backdrop-filter: blur(14px);
+  border: 1px solid rgba(255, 255, 255, 0.12);
+}
+
+.glass-header {
+  background: rgba(11, 37, 69, 0.92);
+  backdrop-filter: blur(16px);
+  -webkit-backdrop-filter: blur(16px);
+  border-bottom: 1px solid rgba(245, 158, 11, 0.35);
+}
+
+
+/* ========================================================
+   LIGHT MODE THEME STYLES (Chế độ sáng)
+   ======================================================== */
+body.light-mode {
+  background-color: #f8fafc !important;
+  color: #0f172a !important;
+}
+
+body.light-mode .glass-header {
+  background: rgba(255, 255, 255, 0.96) !important;
+  border-bottom: 2px solid #e2e8f0 !important;
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.06) !important;
+}
+
+body.light-mode .glass-header h1 {
+  color: #0b2545 !important;
+}
+
+body.light-mode .glass-header nav a {
+  color: #334155 !important;
+}
+
+body.light-mode .glass-header nav a:hover {
+  color: #b45309 !important;
+}
+
+body.light-mode .bg-cand-gradient {
+  background: radial-gradient(circle at 50% 20%, #e0e7ff 0%, #f1f5f9 60%, #f8fafc 100%) !important;
+}
+
+body.light-mode .hero-heading-main {
+  color: #0b2545 !important;
+}
+
+body.light-mode .hero-subtext {
+  color: #475569 !important;
+}
+
+body.light-mode #bookshelf-section {
+  background-color: #f1f5f9 !important;
+}
+
+body.light-mode #about-section {
+  background-color: #ffffff !important;
+}
+
+body.light-mode #bookshelf-wrapper {
+  background-color: #ffffff !important;
+  border-color: #cbd5e1 !important;
+  box-shadow: 0 20px 40px rgba(0, 0, 0, 0.08) !important;
+}
+
+body.light-mode .category-filter-btn {
+  background-color: #e2e8f0 !important;
+  color: #334155 !important;
+}
+
+body.light-mode .category-filter-btn.bg-amber-500 {
+  background-color: #f59e0b !important;
+  color: #020617 !important;
+}
+
+body.light-mode #about-section .bg-slate-900 {
+  background-color: #f8fafc !important;
+  border-color: #e2e8f0 !important;
+}
+
+body.light-mode #about-section .text-white {
+  color: #0f172a !important;
+}
+
+body.light-mode #about-section .text-slate-300,
+body.light-mode #about-section .text-slate-400 {
+  color: #475569 !important;
+}
+
+body.light-mode footer {
+  background-color: #f1f5f9 !important;
+  border-color: #e2e8f0 !important;
+  color: #64748b !important;
+}
+
+body.light-mode footer .text-white {
+  color: #0b2545 !important;
+}
+
+body.light-mode footer .text-amber-300 {
+  color: #b45309 !important;
+}
+
+body.light-mode #chibi-speech-bubble {
+  background-color: #ffffff !important;
+  border-color: #f59e0b !important;
+  box-shadow: 0 10px 25px rgba(0,0,0,0.12) !important;
+}
+
+body.light-mode #chibi-speech-text {
+  color: #1e293b !important;
+}
+
+body.light-mode #chibi-mascot-label {
+  background-color: #ffffff !important;
+  color: #0b2545 !important;
+  border-color: #f59e0b !important;
+}
