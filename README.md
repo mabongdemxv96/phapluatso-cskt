@@ -26,7 +26,7 @@
 
 4. **Trợ lý AI Hỏi đáp Pháp luật (Google Gemini API Free):**
    - Nhân cách hóa chuẩn mực người chiến sĩ CAND: Trợ lý Pháp luật số của Đoàn cơ sở Phòng Cảnh sát kinh tế – Công an tỉnh Gia Lai.
-   - Hỗ trợ nhập mã Google Gemini API Key miễn phí (lưu an toàn trong trình duyệt người dùng qua `localStorage`).
+   - Khóa Gemini được giấu trong proxy Cloudflare Worker, không nằm trong mã nguồn website. Hướng dẫn cài đặt: [proxy/HUONG-DAN.md](proxy/HUONG-DAN.md).
    - Có sẵn chế độ trả lời chuyên sâu mẫu (Offline mode) ngay cả khi chưa nhập key.
    - Gợi ý các câu hỏi nhanh thường gặp về tội phạm kinh tế và Nghị quyết 57-NQ/TW.
 

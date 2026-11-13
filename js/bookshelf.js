@@ -14,7 +14,6 @@ const Bookshelf = {
     this.refreshBooks();
     this.render();
     this.bindEvents();
-    this.bindUpload();
 
     if (window.LegalLibrary) {
       LegalLibrary.onChange(() => {
@@ -54,48 +53,6 @@ const Bookshelf = {
     });
   },
 
-  bindUpload() {
-    const input = document.getElementById('library-upload-input');
-    const btn = document.getElementById('btn-library-upload');
-    const wrapper = document.getElementById('bookshelf-wrapper');
-    if (btn && input) {
-      btn.addEventListener('click', () => input.click());
-      input.addEventListener('change', () => {
-        if (input.files.length) this.handleFiles(input.files);
-        input.value = '';
-      });
-    }
-    if (wrapper) {
-      ['dragenter', 'dragover'].forEach(ev => wrapper.addEventListener(ev, (e) => {
-        e.preventDefault();
-        wrapper.classList.add('is-dragover');
-      }));
-      ['dragleave', 'drop'].forEach(ev => wrapper.addEventListener(ev, (e) => {
-        e.preventDefault();
-        wrapper.classList.remove('is-dragover');
-      }));
-      wrapper.addEventListener('drop', (e) => {
-        if (e.dataTransfer && e.dataTransfer.files.length) this.handleFiles(e.dataTransfer.files);
-      });
-    }
-  },
-
-  async handleFiles(files) {
-    if (!window.LegalLibrary) return;
-    const pdfs = [...files].filter(f => /\.pdf$/i.test(f.name) || f.type === 'application/pdf');
-    if (!pdfs.length) {
-      if (window.ChibiMascot) ChibiMascot.speak('Hệ thống chỉ tiếp nhận tệp văn bản định dạng PDF, đồng chí kiểm tra lại giúp nhé!');
-      return;
-    }
-    if (window.ChibiMascot) ChibiMascot.speak(`Đang tiếp nhận ${pdfs.length} văn bản: lưu nguyên trạng tệp gốc, dựng sách 3D và trích xuất từng điều luật…`);
-    const added = await LegalLibrary.addUploadedFiles(pdfs);
-    if (window.ChibiMascot && added.length) {
-      const arts = added.reduce((a, d) => a + d.units.filter(u => u.kind === 'article').length, 0);
-      const scanned = added.filter(d => d.status === 'scanned').length;
-      ChibiMascot.speak(`Đã nạp ${added.length} văn bản, trích xuất ${arts} điều luật vào Thanh tìm kiếm và Trợ lý AI.` + (scanned ? ` Có ${scanned} tệp là PDF ảnh scan, chưa trích xuất được chữ.` : ''), 12000);
-    }
-  },
-
   renderStatus() {
     if (!this.statusEl || !window.LegalLibrary) return;
     const docs = LegalLibrary.docs;
@@ -106,7 +63,7 @@ const Bookshelf = {
     } else if (docs.length) {
       this.statusEl.innerHTML = `<i class="fa-solid fa-circle-check text-emerald-500"></i><span>Đã nạp <strong>${docs.length}</strong> văn bản gốc · <strong>${arts}</strong> điều luật cho Tìm kiếm &amp; Trợ lý AI</span>`;
     } else {
-      this.statusEl.innerHTML = `<i class="fa-solid fa-circle-info text-blue-500"></i><span>Chưa có văn bản gốc. Bấm “Tải văn bản PDF” hoặc chép tệp vào thư mục <code>tai-lieu-phap-ly/</code>.</span>`;
+      this.statusEl.innerHTML = `<i class="fa-solid fa-circle-info text-blue-500"></i><span>Chưa có văn bản gốc. Chép tệp PDF vào thư mục <code>tai-lieu-phap-ly/</code> của website để bổ sung.</span>`;
     }
   },
 
