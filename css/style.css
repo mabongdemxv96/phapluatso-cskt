@@ -433,6 +433,49 @@ body,
   text-align: justify;
 }
 
+/* ---------- Video giới thiệu ---------- */
+.intro-video {
+  position: relative;
+  margin: 0;
+  border-radius: 1.25rem;
+  overflow: hidden;
+  border: 2px solid rgba(251, 191, 36, 0.6);
+  background: #061a33;
+  box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.55), 0 0 0 6px rgba(245, 158, 11, 0.08);
+}
+.intro-video video {
+  display: block;
+  width: 100%;
+  aspect-ratio: 16 / 9;
+  object-fit: cover;
+  background: #061a33;
+}
+.intro-video figcaption {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 0.6rem 0.9rem;
+  font-size: 12px;
+  font-weight: 700;
+  color: #e2e8f0;
+  background: rgba(2, 6, 23, 0.85);
+}
+.intro-video-btn {
+  position: absolute;
+  top: 0.6rem;
+  right: 0.6rem;
+  width: 2.25rem;
+  height: 2.25rem;
+  border-radius: 9999px;
+  color: #fff;
+  background: rgba(2, 6, 23, 0.6);
+  border: 1px solid rgba(255, 255, 255, 0.25);
+  opacity: 0.85;
+  transition: opacity .15s, background .15s;
+}
+.intro-video-btn:hover { opacity: 1; background: rgba(245, 158, 11, 0.9); color: #1c1002; }
+body.light-mode .intro-video { box-shadow: 0 20px 40px rgba(11, 37, 69, 0.18), 0 0 0 6px rgba(245, 158, 11, 0.12); }
+
 /* ---------- AI Chat ---------- */
 
 /* Điện thoại: khung chat toàn màn hình */

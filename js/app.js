@@ -94,6 +94,36 @@ window.toggleTheme = function() {
   if (window.AppDiagnostics) window.AppDiagnostics.logAction(isLight ? 'Chuyển sang Chế độ Sáng' : 'Chuyển sang Chế độ Tối');
 };
 
+// Video giới thiệu: chỉ phát khi đang nằm trong màn hình (tiết kiệm pin, dữ liệu di động)
+function initIntroVideo() {
+  const video = document.getElementById('intro-video');
+  if (!video) return;
+  const reduceMotion = window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+  if (reduceMotion) {
+    video.removeAttribute('autoplay');
+    video.controls = true;
+    video.pause();
+  } else if ('IntersectionObserver' in window) {
+    video.pause();
+    new IntersectionObserver((entries) => {
+      entries.forEach(e => {
+        if (e.isIntersecting) video.play().catch(() => { video.controls = true; });
+        else video.pause();
+      });
+    }, { threshold: 0.35 }).observe(video);
+  }
+
+  const btn = document.getElementById('btn-intro-fullscreen');
+  if (btn) {
+    btn.addEventListener('click', () => {
+      video.controls = true;
+      const req = video.requestFullscreen || video.webkitRequestFullscreen || video.webkitEnterFullscreen;
+      if (req) req.call(video);
+      video.play().catch(() => {});
+    });
+  }
+}
+
 // Mở trực tiếp Nghị quyết 57-NQ/TW trong sách 3D
 window.openNghiQuyet57 = function() {
   if (window.AppDiagnostics) {
@@ -118,6 +148,7 @@ document.addEventListener('DOMContentLoaded', () => {
   // Initialize Theme
   window.initTheme();
   initScrollTint();
+  initIntroVideo();
 
   // Initialize Modules
   if (window.Flipbook) Flipbook.init();

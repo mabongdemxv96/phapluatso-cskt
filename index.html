@@ -51,7 +51,7 @@
   <script src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.min.js"></script>
 
   <!-- Custom Stylesheet -->
-  <link rel="stylesheet" href="css/style.css?v=20261113c">
+  <link rel="stylesheet" href="css/style.css?v=20261113d">
 </head>
 
 <body class="bg-slate-950 text-slate-100 font-sans antialiased selection:bg-amber-400 selection:text-slate-950 min-h-screen flex flex-col">
@@ -356,25 +356,23 @@
           </div>
         </div>
 
+        <!-- Video giới thiệu công trình (tạo bằng tools/tao-video-gioi-thieu.html) -->
         <div class="lg:col-span-5 flex flex-col items-center">
-          <div class="about-card w-full max-w-sm p-6 bg-gradient-to-b from-slate-900 to-blue-950/80 border-2 border-amber-400/50 rounded-3xl shadow-2xl text-center relative overflow-hidden">
-            <div class="w-24 h-24 sm:w-28 sm:h-28 mx-auto mb-3 flex items-center justify-center">
-              <img src="assets/images/logo-cskt.png" class="w-full h-full object-contain drop-shadow-lg" alt="Logo Cảnh sát kinh tế" />
-            </div>
-
-            <span class="px-3 py-1 bg-amber-400 text-slate-950 text-xs font-black rounded-full uppercase tracking-wider">
-              TRỢ LÝ PHÁP LUẬT SỐ 4.0
-            </span>
-
-            <h4 class="text-base font-bold text-white mt-3">Hỏi đáp Pháp luật Thông minh</h4>
-            <p class="text-xs text-slate-300 mt-1 leading-relaxed">
-              Trợ lý AI hỏi đáp pháp luật: trả lời ngắn gọn, đúng trọng tâm, có nêu căn cứ điều luật.
-            </p>
-
-            <button onclick="AIChatbot.toggleChat()" class="mt-4 w-full py-2.5 bg-amber-500 hover:bg-amber-400 text-slate-950 font-bold text-xs rounded-xl transition shadow flex items-center justify-center gap-2">
-              <i class="fa-solid fa-comments"></i> Bắt đầu trò chuyện với AI
+          <figure class="intro-video keep-dark w-full max-w-xl">
+            <video
+              id="intro-video"
+              src="assets/video/gioi-thieu.mp4"
+              poster="assets/video/gioi-thieu-poster.jpg"
+              autoplay muted loop playsinline preload="metadata"
+              aria-label="Video giới thiệu Không gian pháp luật số và Trợ lý AI"></video>
+            <button type="button" id="btn-intro-fullscreen" class="intro-video-btn" aria-label="Xem video toàn màn hình" title="Xem toàn màn hình">
+              <i class="fa-solid fa-expand"></i>
             </button>
-          </div>
+            <figcaption>
+              <i class="fa-solid fa-circle-play text-amber-400"></i>
+              Giới thiệu công trình · 21 giây
+            </figcaption>
+          </figure>
         </div>
 
       </div>
@@ -599,16 +597,16 @@
 
 
   <!-- ================= JAVASCRIPT MODULES ================= -->
-  <script src="js/config.js?v=20261113c"></script>
-  <script src="js/diagnostics.js?v=20261113c"></script>
-  <script src="js/data.js?v=20261113c"></script>
-  <script src="js/legal-library.js?v=20261113c"></script>
-  <script src="js/chibi.js?v=20261113c"></script>
-  <script src="js/flipbook.js?v=20261113c"></script>
-  <script src="js/bookshelf.js?v=20261113c"></script>
-  <script src="js/search.js?v=20261113c"></script>
-  <script src="js/chatbot.js?v=20261113c"></script>
-  <script src="js/app.js?v=20261113c"></script>
+  <script src="js/config.js?v=20261113d"></script>
+  <script src="js/diagnostics.js?v=20261113d"></script>
+  <script src="js/data.js?v=20261113d"></script>
+  <script src="js/legal-library.js?v=20261113d"></script>
+  <script src="js/chibi.js?v=20261113d"></script>
+  <script src="js/flipbook.js?v=20261113d"></script>
+  <script src="js/bookshelf.js?v=20261113d"></script>
+  <script src="js/search.js?v=20261113d"></script>
+  <script src="js/chatbot.js?v=20261113d"></script>
+  <script src="js/app.js?v=20261113d"></script>
 
 </body>
 </html>
