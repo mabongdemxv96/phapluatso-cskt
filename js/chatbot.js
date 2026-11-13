@@ -5,9 +5,9 @@
  */
 
 const AIChatbot = {
-  apiKey: 'AIzaSyDaNVqhGh-HhyWvcqc1QseCavbGoAHqmjA',
-  model: 'gemini-2.5-flash',
-  fallbackModel: 'gemini-flash-latest',
+  // Khóa Gemini KHÔNG nằm trong mã nguồn website: mọi câu hỏi đi qua proxy (xem thư mục proxy/).
+  // Địa chỉ proxy khai báo trong js/config.js
+  proxyUrl: (window.CSKT_CONFIG && window.CSKT_CONFIG.aiProxyUrl) || '',
   chatHistory: [],
   isGenerating: false,
 
@@ -106,27 +106,22 @@ const AIChatbot = {
     // Show AI typing indicator
     const typingId = this.addTypingIndicator();
 
-    // Truy hồi căn cứ pháp lý nguyên văn từ thư viện văn bản gốc
-    const sources = window.LegalLibrary ? LegalLibrary.retrieve(message, 5) : [];
-
     try {
       let reply = '';
-      let offline = false;
+      let online = true;
       try {
-        reply = await this.callAIEndpoint(message, this.model, sources);
-      } catch (err1) {
-        console.warn(`Thử model ${this.model} không thành công, chuyển sang ${this.fallbackModel}:`, err1);
-        try {
-          reply = await this.callAIEndpoint(message, this.fallbackModel, sources);
-        } catch (err2) {
-          console.warn("Chuyển sang chế độ dữ liệu chuyên gia offline:", err2);
-          offline = true;
-          reply = await this.getOfflineSmartAnswer(message, sources);
-        }
+        reply = await this.callAIEndpoint(message);
+      } catch (err) {
+        console.warn("Không gọi được Trợ lý AI, chuyển sang trả lời offline:", err);
+        online = false;
+        reply = await this.getOfflineSmartAnswer(message);
       }
 
+      // Ghi nhớ hội thoại ngắn để câu hỏi tiếp theo hiểu đúng ngữ cảnh
+      if (online) this.rememberTurn(message, reply);
+
       this.removeTypingIndicator(typingId);
-      this.addAiMessage(reply, offline ? [] : sources);
+      this.addAiMessage(reply);
     } catch (err) {
       this.removeTypingIndicator(typingId);
       console.error("Lỗi AI Chatbot:", err);
@@ -137,89 +132,53 @@ const AIChatbot = {
     }
   },
 
-  buildSourceContext(sources) {
-    if (!sources || !sources.length) {
-      return `KHÔNG tìm thấy điều luật liên quan trong thư viện văn bản gốc của đơn vị cho câu hỏi này.
-Hãy nói rõ điều đó ở đầu câu trả lời ("Thư viện văn bản gốc chưa có điều luật tương ứng"), chỉ đưa ra định hướng chung mang tính tham khảo, KHÔNG được đặt nội dung trong ngoặc kép như trích dẫn nguyên văn, và khuyến nghị đồng chí đối chiếu văn bản gốc.`;
-    }
-    const MAX = 14000;
-    let used = 0;
-    const blocks = [];
-    sources.forEach((s, i) => {
-      let text = s.unit.text;
-      if (used + text.length > MAX) text = text.slice(0, Math.max(800, MAX - used)) + ' […]';
-      used += text.length;
-      blocks.push(`[Nguồn ${i + 1}] ${LegalLibrary.citationLabel(s.unit, s.doc)} (trang ${s.unit.page})\n${text}`);
-    });
-    return `CÁC CĂN CỨ PHÁP LÝ NGUYÊN VĂN (trích từ file PDF gốc của đơn vị):\n\n${blocks.join('\n\n---\n\n')}`;
+  // Lưu tối đa 3 lượt hỏi đáp gần nhất (cắt ngắn) để tiết kiệm token
+  MAX_TURNS: 3,
+  rememberTurn(question, answer) {
+    const clip = (s, n) => (s.length > n ? s.slice(0, n) + '…' : s);
+    this.chatHistory.push(
+      { role: 'user', text: clip(question, 600) },
+      { role: 'model', text: clip(answer, 900) }
+    );
+    const max = this.MAX_TURNS * 2;
+    if (this.chatHistory.length > max) this.chatHistory = this.chatHistory.slice(-max);
   },
 
-  async callAIEndpoint(userPrompt, modelName, sources = []) {
-    const systemPrompt = `Bạn là "Trợ lý Pháp luật số" của Đoàn cơ sở Phòng Cảnh sát kinh tế – Công an tỉnh Gia Lai (công trình thanh niên tiên phong thực hiện Nghị quyết số 57-NQ/TW của Bộ Chính trị về đổi mới sáng tạo, phát triển khoa học công nghệ và chuyển đổi số).
-Quy tắc trả lời bắt buộc:
-1. Luôn giữ phong thái chuẩn mực, trang trọng của người chiến sĩ Công an nhân dân Việt Nam, xưng "tôi" và gọi người dùng là "đồng chí" hoặc "quý công dân".
-2. Giải đáp chính xác, khách quan, súc tích và có cấu trúc rõ ràng các vấn đề pháp luật theo hệ thống pháp luật Việt Nam:
-   - Luật Xử lý vi phạm hành chính (hợp nhất Công báo mới nhất 2025 theo Luật số 88/2025/QH15, đặc biệt Điều 6 về thời hiệu xử phạt, Điều 18a về xử lý VPHC trên môi trường điện tử).
-   - Bộ luật Hình sự về các tội danh trật tự quản lý kinh tế (Điều 188 Buôn lậu, Điều 190 Hàng cấm, Điều 192 Hàng giả, Điều 200 Trốn thuế, Điều 201 Cho vay lãi nặng, Điều 324 Rửa tiền, Điều 222 Đấu thầu...).
-   - Nghị quyết số 57-NQ/TW về đột phá khoa học công nghệ và chuyển đổi số.
-3. Luôn chỉ rõ căn cứ điều luật cụ thể (Điều, Khoản, Luật/Nghị định).
-4. Phân tích trọng tâm câu hỏi của đồng chí, nêu rõ các mốc thời gian, mức phạt, điều kiện áp dụng. Trả lời đầy đủ toàn bộ nội dung, không ngắt quãng giữa chừng.
-5. Định dạng câu trả lời rõ ràng bằng Markdown (dùng gạch đầu dòng, in đậm các ý chính).
-6. QUY TẮC TRÍCH DẪN TUYỆT ĐỐI: Khi có "CÁC CĂN CỨ PHÁP LÝ NGUYÊN VĂN" đi kèm câu hỏi, chỉ được dùng các nguồn đó làm căn cứ. Mọi trích dẫn phải chép NGUYÊN VĂN từng chữ trong ngoặc kép và ghi rõ [Nguồn n], Điều, Khoản, Điểm. Không tự suy diễn mức phạt, số điều, thời hạn không có trong nguồn. Nếu nguồn không đủ để trả lời, phải nói rõ phần nào chưa có căn cứ trong thư viện.`;
+  SYSTEM_PROMPT: `Bạn là "Trợ lý Pháp luật số" của Đoàn cơ sở Phòng Cảnh sát kinh tế – Công an tỉnh Gia Lai, hỗ trợ cán bộ, chiến sĩ và người dân tra cứu pháp luật Việt Nam.
+Cách trả lời:
+- Xưng "tôi", gọi người hỏi là "đồng chí"; giọng chuẩn mực, thân thiện.
+- Ngắn gọn, đúng trọng tâm: tối đa khoảng 120 từ, ưu tiên 2–5 gạch đầu dòng. Không chào hỏi dài, không nhắc lại câu hỏi, không lan man.
+- Nêu căn cứ ngắn (Điều/Khoản, tên luật, nghị định) khi có; mức phạt, thời hạn ghi bằng số cụ thể.
+- Chỉ trả lời chi tiết hơn khi người hỏi yêu cầu.
+- Nếu không chắc chắn hoặc quy định có thể đã thay đổi, nói rõ và khuyên đối chiếu văn bản hiện hành.
+- Câu hỏi ngoài lĩnh vực pháp luật: trả lời rất ngắn rồi gợi ý quay lại chủ đề pháp luật.
+- Dùng Markdown đơn giản (gạch đầu dòng, **in đậm** ý chính).`,
 
-    const contextBlock = this.buildSourceContext(sources);
-    const fullPrompt = `${contextBlock}\n\n=====\nCÂU HỎI CỦA ĐỒNG CHÍ: ${userPrompt}`;
+  async callAIEndpoint(userPrompt) {
+    if (!this.proxyUrl) throw new Error('Chưa cấu hình aiProxyUrl trong js/config.js');
 
-    const endpoint = `https://generativelanguage.googleapis.com/v1beta/models/${modelName}:generateContent?key=${this.apiKey.trim()}`;
-
-    const requestBody = {
-      systemInstruction: {
-        parts: [{ text: systemPrompt }]
-      },
-      contents: [
-        {
-          role: "user",
-          parts: [{ text: fullPrompt }]
-        }
-      ],
-      generationConfig: {
-        temperature: 0.25,
-        maxOutputTokens: 4096,
-        thinkingConfig: { thinkingBudget: 0 }
-      }
-    };
-
-    const response = await fetch(endpoint, {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify(requestBody)
-    });
-
-    if (!response.ok) {
-      const errorJson = await response.json().catch(() => ({}));
-      const msg = errorJson.error ? errorJson.error.message : response.statusText;
-      throw new Error(msg);
-    }
-
-    const data = await response.json();
-    if (data.candidates && data.candidates[0] && data.candidates[0].content && data.candidates[0].content.parts && data.candidates[0].content.parts.length > 0) {
-      return data.candidates[0].content.parts[0].text;
-    } else {
-      throw new Error("Không nhận được nội dung hợp lệ.");
+    const controller = new AbortController();
+    const timer = setTimeout(() => controller.abort(), 30000);
+    try {
+      const response = await fetch(this.proxyUrl, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        signal: controller.signal,
+        body: JSON.stringify({
+          system: this.SYSTEM_PROMPT,
+          messages: [...this.chatHistory, { role: 'user', text: userPrompt }]
+        })
+      });
+      const data = await response.json().catch(() => ({}));
+      if (!response.ok || !data.text) throw new Error(data.error || `Proxy lỗi ${response.status}`);
+      return data.text;
+    } finally {
+      clearTimeout(timer);
     }
   },
 
-  async getOfflineSmartAnswer(query, sources = []) {
+  async getOfflineSmartAnswer(query) {
     await new Promise(r => setTimeout(r, 400));
-
-    // Ưu tiên trả lời bằng nguyên văn điều luật trích từ văn bản gốc
-    if (sources.length) {
-      const parts = sources.slice(0, 3).map((s, i) =>
-        `### [Nguồn ${i + 1}] ${LegalLibrary.citationLabel(s.unit, s.doc)}\n*Trang ${s.unit.page} – tệp gốc: ${s.doc.fileName}*\n\n${s.unit.text}`
-      );
-      return `Kính chào đồng chí! Đường truyền tới máy chủ AI đang gián đoạn, tôi xin cung cấp **nguyên văn các căn cứ pháp lý** liên quan nhất trong thư viện văn bản gốc của đơn vị:\n\n${parts.join('\n\n')}`;
-    }
-
     const q = query.toLowerCase();
 
     if (q.includes("thời hiệu") || (q.includes("xử phạt") && q.includes("hành chính")) || q.includes("điều 6")) {
@@ -237,7 +196,7 @@ Quy tắc trả lời bắt buộc:
     } else if (q.includes("nghị quyết 57") || q.includes("57-nq/tw") || q.includes("nq 57")) {
       return window.APP_DATA.offlineAiAnswers["nghi-quyet-57"];
     } else {
-      return `Kính chào đồng chí! Tôi là **Trợ lý Pháp luật số** của Đoàn cơ sở Phòng Cảnh sát kinh tế – Công an tỉnh Gia Lai.\n\nĐồng chí có thể tra cứu nhanh các quy định trọng tâm bằng các nút gợi ý câu hỏi bên dưới hoặc tra cứu trực tiếp các Điều luật trong Tủ sách 3D:\n- **Luật Xử lý vi phạm hành chính 2025** (Thời hiệu, nguyên tắc xử phạt, môi trường điện tử)\n- **Bộ luật Hình sự** (Tội buôn lậu Đ188, Trốn thuế Đ200, Cho vay lãi nặng Đ201, Rửa tiền Đ324)\n- **Nghị quyết số 57-NQ/TW** về chuyển đổi số.`;
+      return `Xin lỗi đồng chí, **kết nối AI đang tạm gián đoạn** nên tôi chưa trả lời được câu hỏi này. Đồng chí vui lòng thử lại sau ít phút, hoặc dùng **Thanh tìm kiếm** để tra cứu điều luật.`;
     }
   },
 
@@ -253,36 +212,7 @@ Quy tắc trả lời bắt buộc:
     this.scrollToBottom();
   },
 
-  renderCitations(sources) {
-    if (!sources || !sources.length) return '';
-    const esc = LegalLibrary.escapeHtml;
-    const items = sources.map((s, i) => `
-      <details class="citation-item">
-        <summary>
-          <span class="citation-num">${i + 1}</span>
-          <span class="flex-1">${esc(LegalLibrary.citationLabel(s.unit, s.doc))}</span>
-        </summary>
-        <div class="verbatim-text text-[11px] mt-2">${esc(s.unit.text)}</div>
-        <div class="flex flex-wrap gap-1.5 mt-2">
-          <button onclick="LawSearch.copyUnit('${s.unit.id}')" class="citation-btn"><i class="fa-regular fa-copy"></i> Sao chép</button>
-          <button onclick="AIChatbot.openSource('${s.doc.id}', ${s.unit.page})" class="citation-btn is-primary"><i class="fa-solid fa-book-open"></i> Mở trang ${s.unit.page} bản gốc</button>
-        </div>
-      </details>`).join('');
-    return `
-      <div class="citation-box">
-        <div class="citation-head"><i class="fa-solid fa-file-shield"></i> Căn cứ pháp lý – trích nguyên văn từ văn bản gốc</div>
-        ${items}
-      </div>`;
-  },
-
-  openSource(docId, page) {
-    const book = window.Bookshelf ? Bookshelf.findBook(docId) : null;
-    if (!book) return;
-    if (window.innerWidth < 640) this.closeChat();
-    Flipbook.openBook(book, page - 1);
-  },
-
-  addAiMessage(markdownText, sources = []) {
+  addAiMessage(markdownText) {
     const msgEl = document.createElement('div');
     msgEl.className = 'flex items-start gap-2.5 mb-4';
     msgEl.innerHTML = `
@@ -297,7 +227,6 @@ Quy tắc trả lời bắt buộc:
         <div class="prose prose-invert prose-xs text-slate-200">
           ${this.formatMarkdown(markdownText)}
         </div>
-        ${this.renderCitations(sources)}
       </div>
     `;
     this.chatBody.appendChild(msgEl);

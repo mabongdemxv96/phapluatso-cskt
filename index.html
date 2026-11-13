@@ -51,7 +51,7 @@
   <script src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.min.js"></script>
 
   <!-- Custom Stylesheet -->
-  <link rel="stylesheet" href="css/style.css?v=20261111c">
+  <link rel="stylesheet" href="css/style.css?v=20261113c">
 </head>
 
 <body class="bg-slate-950 text-slate-100 font-sans antialiased selection:bg-amber-400 selection:text-slate-950 min-h-screen flex flex-col">
@@ -235,11 +235,6 @@
         </div>
 
         <div class="flex flex-wrap items-center gap-2">
-          <input id="library-upload-input" type="file" accept="application/pdf,.pdf" multiple class="hidden" />
-          <button id="btn-library-upload" class="px-4 py-2.5 bg-amber-500 hover:bg-amber-400 text-slate-950 font-bold text-xs rounded-xl shadow transition flex items-center gap-2">
-            <i class="fa-solid fa-file-arrow-up"></i>
-            <span>Tải văn bản PDF</span>
-          </button>
           <button onclick="openNghiQuyet57()" class="px-4 py-2.5 bg-red-900/60 hover:bg-red-800 text-amber-300 font-bold text-xs rounded-xl border border-red-500/40 shadow transition flex items-center gap-2">
             <i class="fa-solid fa-flag text-amber-400"></i>
             <span>Nghị quyết 57-NQ/TW</span>
@@ -275,11 +270,6 @@
       <div id="bookshelf-wrapper" class="bookshelf-stage bg-slate-950/80 border border-slate-800/90 rounded-2xl sm:rounded-3xl p-3 sm:p-10 shadow-2xl relative overflow-hidden transition-all">
         <div class="shelf-ambient absolute inset-0 bg-gradient-to-b from-blue-950/20 via-slate-950/60 to-slate-950 pointer-events-none"></div>
 
-        <div class="drop-hint">
-          <i class="fa-solid fa-file-arrow-down text-3xl"></i>
-          <span>Thả tệp PDF vào đây để thêm vào tủ sách</span>
-        </div>
-
         <div id="bookshelf-container" class="relative z-10 space-y-4 sm:space-y-6">
           <!-- Rendered via js/bookshelf.js -->
         </div>
@@ -291,7 +281,7 @@
       <div class="mt-4 p-3.5 bg-slate-950/60 border border-slate-800 rounded-xl flex items-start sm:items-center justify-between gap-2 text-xs text-slate-400">
         <span class="flex items-start sm:items-center gap-2">
           <i class="fa-solid fa-hand-pointer text-amber-400 mt-0.5 sm:mt-0"></i>
-          <span><strong>Hướng dẫn:</strong> Chạm vào sách để mở trình đọc. Trên điện thoại vuốt ngang để lật trang. Kéo thả hoặc bấm “Tải văn bản PDF” để thêm văn bản mới.</span>
+          <span><strong>Hướng dẫn:</strong> Chạm vào sách để mở trình đọc. Trên điện thoại vuốt ngang để lật trang.</span>
         </span>
         <span class="text-amber-400 font-semibold hidden md:inline whitespace-nowrap">
           <i class="fa-solid fa-book-open-reader mr-1"></i> Tủ sách pháp luật số 4.0
@@ -339,7 +329,7 @@
               </div>
               <div>
                 <h5 class="text-xs font-bold text-white uppercase">Ứng dụng Trí tuệ AI</h5>
-                <p class="text-[12px] sm:text-[11px] text-slate-400 mt-1">Trợ lý ảo giải đáp pháp luật 24/7, trích dẫn nguyên văn căn cứ từ văn bản gốc.</p>
+                <p class="text-[12px] sm:text-[11px] text-slate-400 mt-1">Trợ lý ảo giải đáp nhanh, ngắn gọn các câu hỏi pháp luật 24/7.</p>
               </div>
             </div>
 
@@ -378,7 +368,7 @@
 
             <h4 class="text-base font-bold text-white mt-3">Hỏi đáp Pháp luật Thông minh</h4>
             <p class="text-xs text-slate-300 mt-1 leading-relaxed">
-              Trợ lý AI chuyên sâu về pháp luật, giải đáp tình huống nghiệp vụ và luôn kèm nguyên văn căn cứ pháp lý để đối chiếu.
+              Trợ lý AI hỏi đáp pháp luật: trả lời ngắn gọn, đúng trọng tâm, có nêu căn cứ điều luật.
             </p>
 
             <button onclick="AIChatbot.toggleChat()" class="mt-4 w-full py-2.5 bg-amber-500 hover:bg-amber-400 text-slate-950 font-bold text-xs rounded-xl transition shadow flex items-center justify-center gap-2">
@@ -561,7 +551,7 @@
         <div class="max-w-[88%] bg-slate-800 text-slate-100 border border-slate-700/80 px-3.5 py-3 rounded-2xl rounded-tl-none text-xs leading-relaxed shadow chat-bubble-tail-left">
           <p class="font-bold text-amber-300 text-[11px] mb-1">Kính chào đồng chí và quý công dân!</p>
           <p>Tôi là <strong>Trợ lý Pháp luật số</strong> của Đoàn cơ sở Phòng Cảnh sát kinh tế – Công an tỉnh Gia Lai (công trình tiên phong thực hiện Nghị quyết số 57-NQ/TW).</p>
-          <p class="mt-1 text-slate-300">Mỗi câu trả lời đều kèm <strong>nguyên văn căn cứ pháp lý</strong> trích từ văn bản gốc trong tủ sách, có số trang để đồng chí đối chiếu.</p>
+          <p class="mt-1 text-slate-300">Đồng chí cứ hỏi bất kỳ vấn đề pháp luật nào, tôi sẽ trả lời <strong>ngắn gọn, đúng trọng tâm</strong> và nêu căn cứ khi có.</p>
         </div>
       </div>
     </div>
@@ -609,15 +599,16 @@
 
 
   <!-- ================= JAVASCRIPT MODULES ================= -->
-  <script src="js/diagnostics.js?v=20261111c"></script>
-  <script src="js/data.js?v=20261111c"></script>
-  <script src="js/legal-library.js?v=20261111c"></script>
-  <script src="js/chibi.js?v=20261111c"></script>
-  <script src="js/flipbook.js?v=20261111c"></script>
-  <script src="js/bookshelf.js?v=20261111c"></script>
-  <script src="js/search.js?v=20261111c"></script>
-  <script src="js/chatbot.js?v=20261111c"></script>
-  <script src="js/app.js?v=20261111c"></script>
+  <script src="js/config.js?v=20261113c"></script>
+  <script src="js/diagnostics.js?v=20261113c"></script>
+  <script src="js/data.js?v=20261113c"></script>
+  <script src="js/legal-library.js?v=20261113c"></script>
+  <script src="js/chibi.js?v=20261113c"></script>
+  <script src="js/flipbook.js?v=20261113c"></script>
+  <script src="js/bookshelf.js?v=20261113c"></script>
+  <script src="js/search.js?v=20261113c"></script>
+  <script src="js/chatbot.js?v=20261113c"></script>
+  <script src="js/app.js?v=20261113c"></script>
 
 </body>
 </html>

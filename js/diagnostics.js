@@ -126,8 +126,9 @@ const AppDiagnostics = {
     const hasChat = typeof window.AIChatbot !== 'undefined';
     checks.push({
       name: 'Trợ lý AI Hỏi đáp (AIChatbot)',
-      status: hasChat && !!window.AIChatbot.apiKey,
-      details: hasChat ? 'Trợ lý AI sẵn sàng kết nối trực tiếp & giải đáp pháp luật 24/7.' : 'Module AIChatbot chưa khởi tạo.'
+      status: hasChat && !!window.AIChatbot.proxyUrl,
+      details: !hasChat ? 'Module AIChatbot chưa khởi tạo.'
+        : (window.AIChatbot.proxyUrl ? `Trợ lý AI kết nối qua proxy: ${window.AIChatbot.proxyUrl}` : 'Chưa khai báo aiProxyUrl trong js/config.js (xem proxy/HUONG-DAN.md).')
     });
 
     // Check 6: PDF.js Library

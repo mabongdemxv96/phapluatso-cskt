@@ -23,6 +23,62 @@ function applyTheme(isLight) {
   if (themeIcon) themeIcon.className = isLight ? 'fa-solid fa-moon text-blue-700' : 'fa-solid fa-sun text-amber-400';
   if (themeText) themeText.textContent = isLight ? 'Giao diện tối' : 'Giao diện sáng';
   if (meta) meta.setAttribute('content', isLight ? '#ffffff' : '#0b2545');
+  if (window.updateScrollTint) window.updateScrollTint();
+}
+
+// Hiệu ứng đổi màu nền nhẹ theo vị trí cuộn trang
+// Mỗi mốc gồm [màu nền, màu quầng sáng]; màu chuyển dần giữa các mốc theo vị trí cuộn
+const SCROLL_PALETTE = {
+  dark: [
+    ['#0f172a', '#1e40af'],   // xanh đêm      + quầng xanh dương
+    ['#0b2a5e', '#f59e0b'],   // xanh CAND     + quầng vàng
+    ['#053f4d', '#10b981'],   // xanh ngọc     + quầng ngọc lục bảo
+    ['#2b1757', '#d946ef'],   // tím than      + quầng hồng tím
+    ['#4a1420', '#fbbf24']    // đỏ mận        + quầng vàng kim
+  ],
+  light: [
+    ['#eef2f8', '#93c5fd'],   // xám xanh      + quầng xanh dương
+    ['#dbeafe', '#fcd34d'],   // xanh trời     + quầng vàng
+    ['#fde7c2', '#fb923c'],   // vàng kem      + quầng cam
+    ['#d3f4e3', '#34d399'],   // xanh bạc hà   + quầng ngọc
+    ['#efe1ff', '#c084fc']    // tím oải hương + quầng tím
+  ]
+};
+function initScrollTint() {
+  const toRgb = (h) => [1, 3, 5].map(i => parseInt(h.slice(i, i + 2), 16));
+  const pal = {
+    dark: SCROLL_PALETTE.dark.map(([bg, glow]) => [toRgb(bg), toRgb(glow)]),
+    light: SCROLL_PALETTE.light.map(([bg, glow]) => [toRgb(bg), toRgb(glow)])
+  };
+  const root = document.documentElement;
+  let queued = false;
+  const mix = (a, b, t) => a.map((v, k) => Math.round(v + (b[k] - v) * t));
+  // Làm mượt chuyển tiếp giữa các mốc màu
+  const ease = (t) => t * t * (3 - 2 * t);
+
+  const update = () => {
+    queued = false;
+    const max = root.scrollHeight - window.innerHeight;
+    const p = max > 0 ? Math.min(1, Math.max(0, window.scrollY / max)) : 0;
+    const isLight = document.body.classList.contains('light-mode');
+    const stops = isLight ? pal.light : pal.dark;
+    const seg = p * (stops.length - 1);
+    const i = Math.min(stops.length - 2, Math.floor(seg));
+    const t = ease(seg - i);
+    const bg = mix(stops[i][0], stops[i + 1][0], t);
+    const glow = mix(stops[i][1], stops[i + 1][1], t);
+    root.style.setProperty('--scroll-bg', `rgb(${bg.join(',')})`);
+    root.style.setProperty('--scroll-glow', `rgba(${glow.join(',')},${isLight ? 0.45 : 0.32})`);
+    // Quầng sáng trôi ngang nhẹ theo vị trí cuộn
+    root.style.setProperty('--scroll-glow-x', `${Math.round(20 + p * 60)}%`);
+  };
+
+  window.addEventListener('scroll', () => {
+    if (!queued) { queued = true; requestAnimationFrame(update); }
+  }, { passive: true });
+  window.addEventListener('resize', update);
+  window.updateScrollTint = update;
+  update();
 }
 
 window.initTheme = function() {
@@ -61,6 +117,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
   // Initialize Theme
   window.initTheme();
+  initScrollTint();
 
   // Initialize Modules
   if (window.Flipbook) Flipbook.init();
