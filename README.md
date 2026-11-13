@@ -54,6 +54,18 @@ Mỗi tệp PDF văn bản pháp luật đưa lên hệ thống đều được 
 
 ---
 
+## 🎬 VIDEO GIỚI THIỆU CÔNG TRÌNH
+
+- Video hiển thị ở cột phải mục giới thiệu Đoàn cơ sở, tự phát không tiếng và lặp lại. Video chỉ chạy khi người xem cuộn tới để tiết kiệm pin.
+- File video: `assets/video/gioi-thieu.mp4` (H.264, 1280×720, 21 giây, khoảng 5 MB). Ảnh bìa: `assets/video/gioi-thieu-poster.jpg`.
+- **Sửa nội dung video:** mở `tools/tao-video-gioi-thieu.html` bằng Chrome hoặc Edge qua máy chủ cục bộ (`run_server.bat`, rồi vào `http://localhost:8000/tools/tao-video-gioi-thieu.html`).
+  - Sửa chữ trong mục `KỊCH BẢN`, bấm **Xuất video** và **Xuất ảnh bìa**.
+  - Chép 2 file tải về đè lên file cũ trong `assets/video/`.
+  - Tăng số `?v=` ở cuối các đường dẫn CSS/JS trong `index.html` để trình duyệt người xem không dùng bản cũ đã lưu.
+- **Thay bằng video quay thật:** đặt file `.mp4` (H.264, dưới 20 MB) vào `assets/video/` với cùng tên `gioi-thieu.mp4`. GitHub không nhận file trên 100 MB; video dài nên đưa lên YouTube rồi nhúng.
+
+---
+
 ## 🚀 HƯỚNG DẪN CHẠY VÀ SỬ DỤNG TRÊN MÁY TÍNH
 
 ### Cách 1: Chạy nhanh bằng file 1-click (Khuyên dùng)
